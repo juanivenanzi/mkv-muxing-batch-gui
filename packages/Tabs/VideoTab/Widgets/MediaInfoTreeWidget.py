@@ -43,9 +43,7 @@ class MediaInfoTreeWidget(TreeWidget):
             videos_track_info = []
             attachments_info = []
             chapter_num_entries = ""
-            string_name_hash = hashlib.sha1(
-                (str(video_name)).encode("utf-8")
-            ).hexdigest()
+            string_name_hash = hashlib.sha1((str(video_name)).encode("utf-8")).hexdigest()
             media_info_file_path = os.path.join(
                 GlobalFiles.MediaInfoFolderPath, string_name_hash + ".json"
             )
@@ -84,7 +82,7 @@ class MediaInfoTreeWidget(TreeWidget):
                     get_attribute(
                         data=track["properties"],
                         attribute="track_name",
-                        default_value="Sin nombre",
+                        default_value="Unnamed",
                     )
                 )
                 if track["type"] == "audio":
@@ -104,7 +102,7 @@ class MediaInfoTreeWidget(TreeWidget):
                 video_main_row = add_row(parent=file_row, name=video_main_string)
                 for video_track in videos_track_info:
                     video_track_string = (
-                        "Id de pista: "
+                        "ID de pista: "
                         + str(video_track.id)
                         + " | "
                         + "Nombre: "
@@ -116,16 +114,14 @@ class MediaInfoTreeWidget(TreeWidget):
                         + "Códec: "
                         + str(video_track.codec)
                     )
-                    video_track_row = add_row(
-                        parent=video_main_row, name=video_track_string
-                    )
+                    add_row(parent=video_main_row, name=video_track_string)
 
             if len(audios_track_info) > 0:
                 audio_main_string = "Audios " + "(" + str(len(audios_track_info)) + ")"
                 audio_main_row = add_row(parent=file_row, name=audio_main_string)
                 for audio_track in audios_track_info:
                     audio_track_string = (
-                        "Id de pista: "
+                        "ID de pista: "
                         + str(audio_track.id)
                         + " | "
                         + "Nombre: "
@@ -137,9 +133,7 @@ class MediaInfoTreeWidget(TreeWidget):
                         + "Códec: "
                         + str(audio_track.codec)
                     )
-                    audio_track_row = add_row(
-                        parent=audio_main_row, name=audio_track_string
-                    )
+                    add_row(parent=audio_main_row, name=audio_track_string)
 
             if len(subtitles_track_info) > 0:
                 subtitle_main_string = (
@@ -148,7 +142,7 @@ class MediaInfoTreeWidget(TreeWidget):
                 subtitle_main_row = add_row(parent=file_row, name=subtitle_main_string)
                 for subtitle_track in subtitles_track_info:
                     subtitle_track_string = (
-                        "Id de pista: "
+                        "ID de pista: "
                         + str(subtitle_track.id)
                         + " | "
                         + "Nombre: "
@@ -160,22 +154,18 @@ class MediaInfoTreeWidget(TreeWidget):
                         + "Códec: "
                         + str(subtitle_track.codec)
                     )
-                    subtitle_track_row = add_row(
-                        parent=subtitle_main_row, name=subtitle_track_string
-                    )
+                    add_row(parent=subtitle_main_row, name=subtitle_track_string)
             if len(attachments_info) > 0:
                 attachment_main_string = (
-                    "Archivos adjuntos " + "(" + str(len(attachments_info)) + ")"
+                    "Adjuntos " + "(" + str(len(attachments_info)) + ")"
                 )
                 attachment_main_row = add_row(
                     parent=file_row, name=attachment_main_string
                 )
                 for attachment_name in attachments_info:
-                    attachment_file_row = add_row(
-                        parent=attachment_main_row, name=attachment_name
-                    )
+                    add_row(parent=attachment_main_row, name=attachment_name)
             if chapter_num_entries != "":
                 chapter_main_string = "Capítulos - Número de entradas: " + str(
                     chapter_num_entries
                 )
-                chapter_main_row = add_row(parent=file_row, name=chapter_main_string)
+                add_row(parent=file_row, name=chapter_main_string)

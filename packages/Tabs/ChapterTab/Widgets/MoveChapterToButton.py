@@ -14,7 +14,7 @@ class MoveChapterToButton(QPushButton):
         super().__init__()
         self.current_index = -1
         self.max_index = -1
-        self.setText("Move To")
+        self.setText("Mover a")
         self.hint_when_enabled = ""
         self.setup_tool_tip_hint()
         self.clicked.connect(self.clicked_button)

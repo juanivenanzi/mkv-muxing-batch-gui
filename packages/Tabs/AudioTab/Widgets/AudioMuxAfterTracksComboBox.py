@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import QComboBox
 
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -11,13 +11,13 @@ def append_int(num):
             return "th"
     lastDigit = num % 10
     if lastDigit == 1:
-        return "st"
+        return "er"
     elif lastDigit == 2:
-        return "nd"
+        return "do"
     elif lastDigit == 3:
-        return "rd"
+        return "er"
     else:
-        return "th"
+        return "o"
 
 
 def num_to_ith(num):
@@ -39,7 +39,7 @@ class AudioMuxAfterTracksComboBox(QComboBox):
         self.clear()
         self.addItem("[Al principio]")
         for item_id in range(1, number_of_tracks + 1):
-            self.addItem(num_to_ith(item_id) + " Audio")
+            self.addItem(num_to_ith(item_id) + " audio")
         for i in range(self.count()):
             self.setItemData(i, self.itemText(i), Qt.ItemDataRole.ToolTipRole)
         self.setStyleSheet("QComboBox { combobox-popup: 0; }")

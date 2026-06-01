@@ -9,9 +9,7 @@ class PresetTabSetDefaultButton(QPushButton):
         super().__init__()
         self.set_as_active_text = "Establecer como predeterminado"
         self.setText(self.set_as_active_text)
-        self.hint_when_enabled = (
-            "establecer como perfil predeterminado para el próximo inicio"
-        )
+        self.hint_when_enabled = "establecer como preajuste predeterminado para el próximo inicio"
         self.update_hint()
         self.clicked.connect(self.set_active_preset_signal.emit)
         self.set_disabled()
@@ -21,9 +19,7 @@ class PresetTabSetDefaultButton(QPushButton):
 
     def set_activated(self):
         self.setEnabled(True)
-        self.hint_when_enabled = (
-            "establecer como perfil predeterminado para el próximo inicio"
-        )
+        self.hint_when_enabled = "establecer como preajuste predeterminado para el próximo inicio"
         self.update_hint()
 
     def set_disabled(self):

@@ -1,6 +1,6 @@
-from PySide6 import QtCore, QtGui
+from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QLabel, QPushButton, QGridLayout, QHBoxLayout
 
 from packages.Startup import GlobalFiles, GlobalIcons
 from packages.Widgets.MyDialog import MyDialog
@@ -15,7 +15,7 @@ class OverwriteFilesDialog(MyDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.info_message = "<nobr>Vas a sobrescribir tus archivos fuente, esto <b>no se puede deshacer</b><br>No hay vuelta atrás, perderás tus archivos fuente"
+        self.info_message = "<nobr>Vas a sobrescribir tus archivos de origen, esto <b>no se puede deshacer</b><br>No hay vuelta atrás, perderás tus archivos de origen"
         self.window_title = "Ruta de destino vacía"
         self.message = QLabel()
         self.messageIcon = QLabel()
@@ -30,9 +30,7 @@ class OverwriteFilesDialog(MyDialog):
         self.main_layout_spacer_item = QLabel()
         self.main_layout = QGridLayout()
         self.main_layout.addWidget(self.messageIcon, 0, 0, 2, 1)
-        self.main_layout.addWidget(
-            self.main_layout_spacer_item, 0, 1, 1, 1
-        )  # add space
+        self.main_layout.addWidget(self.main_layout_spacer_item, 0, 1, 1, 1)  # add space
         self.main_layout.addWidget(self.message, 0, 2, 2, 3)
         self.main_layout.addLayout(self.buttons_layout, 2, 2, 1, -1)
         self.main_layout.setContentsMargins(20, 20, 20, 20)
@@ -56,11 +54,11 @@ class OverwriteFilesDialog(MyDialog):
         self.no_button.clicked.connect(self.click_no)
 
     def click_yes(self):
-        self.result = "Overwrite"  # ← No traducir, valor interno
+        self.result = "Overwrite"
         self.close()
 
     def click_no(self):
-        self.result = "Cancel"  # ← No traducir, valor interno
+        self.result = "Cancel"
         self.close()
 
     def set_dialog_values(self):

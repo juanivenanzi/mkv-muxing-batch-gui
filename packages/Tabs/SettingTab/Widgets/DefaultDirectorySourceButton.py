@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QFileDialog, QPushButton
+from PySide6.QtWidgets import QPushButton, QFileDialog
 
 from packages.Startup import GlobalIcons
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -17,9 +17,7 @@ class DefaultDirectorySourceButton(QPushButton):
 
     def open_select_folder_dialog(self):
         folder_path = QFileDialog.getExistingDirectory(
-            self,
-            caption="Elegir carpeta de videos",
-            dir=GlobalSetting.LAST_DIRECTORY_PATH,
+            self, caption="Elegir carpeta de videos", dir=GlobalSetting.LAST_DIRECTORY_PATH
         )
         if folder_path == "" or folder_path.isspace():
             return

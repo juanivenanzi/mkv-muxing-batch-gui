@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QFileDialog, QPushButton
+from PySide6.QtWidgets import QPushButton, QFileDialog
 
 from packages.Startup import GlobalIcons
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -19,7 +19,7 @@ class AttachmentSourceButton(QPushButton):
     def open_select_folder_dialog(self):
         temp_folder_path = QFileDialog.getExistingDirectory(
             self,
-            caption="Elegir carpeta de archivos adjuntos",
+            caption="Elegir carpeta de adjuntos",
             dir=GlobalSetting.LAST_DIRECTORY_PATH,
         )
         new_folder_path = temp_folder_path

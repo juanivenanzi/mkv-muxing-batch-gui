@@ -1,12 +1,12 @@
-from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QSize, Qt
+from PySide6 import QtGui, QtCore
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QGridLayout,
     QHBoxLayout,
+    QGridLayout,
     QLabel,
     QPushButton,
+    QComboBox,
+    QCheckBox,
 )
 
 from packages.Startup import GlobalIcons
@@ -19,9 +19,9 @@ class ChoosePresetDialog(MyDialog):
     def __init__(self, preset_list, favorite_preset_id, parent=None):
         super().__init__(parent)
         self.message = QLabel()
-        self.message.setText("Perfiles: ")
+        self.message.setText("Preajustes: ")
         self.extra_message = QLabel()
-        self.choose_button = QPushButton("Elegir perfil")
+        self.choose_button = QPushButton("Elegir preajuste")
         self.default_preset_button = QPushButton("Usar predeterminado")
         self.favorite_preset_id = favorite_preset_id
         self.buttonLayout = QHBoxLayout()
@@ -119,7 +119,7 @@ class ChoosePresetDialog(MyDialog):
         self.extra_message.setFont(message_font)
 
     def reset_dialog_values(self):
-        self.setWindowTitle("Perfil de inicio")  # determine when use
+        self.setWindowTitle("Preajuste de inicio")  # determine when use
         self.extra_message.setText("")  # determine when use
 
     def set_default_buttons(self):

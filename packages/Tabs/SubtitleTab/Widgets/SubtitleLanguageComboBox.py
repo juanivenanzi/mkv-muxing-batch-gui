@@ -1,8 +1,8 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QComboBox
 
-from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.Options import Options
+from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Tabs.GlobalSetting import GlobalSetting
 
 
@@ -15,9 +15,9 @@ class SubtitleLanguageComboBox(QComboBox):
         self.initialize()
         self.set_current_index()
         self.setToolTip(
-            "Idioma de subtítulos: "
+            "Idioma de subtítulo: "
             + Options.CurrentPreset.Default_Subtitle_Language
-            + "\nPuedes añadir/quitar idiomas en opciones"
+            + "\nPuedes agregar/eliminar idiomas en opciones"
         )
         self.setMaxVisibleItems(8)
         self.setStyleSheet("QComboBox { combobox-popup: 0; }")
@@ -36,9 +36,9 @@ class SubtitleLanguageComboBox(QComboBox):
 
     def change_global_subtitle_language(self):
         self.setToolTip(
-            "Idioma de subtítulos: "
+            "Idioma de subtítulo: "
             + self.currentText()
-            + "\nPuedes añadir/quitar idiomas en opciones"
+            + "\nPuedes agregar/eliminar idiomas en opciones"
         )
         GlobalSetting.SUBTITLE_LANGUAGE[self.tab_index] = self.currentText()
 

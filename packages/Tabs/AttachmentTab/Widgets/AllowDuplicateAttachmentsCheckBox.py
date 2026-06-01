@@ -6,7 +6,7 @@ from packages.Tabs.GlobalSetting import GlobalSetting
 class AllowDuplicateAttachmentsCheckBox(QCheckBox):
     def __init__(self):
         super().__init__()
-        self.hint_when_enabled = "Permitir duplicados en archivos adjuntos"
+        self.hint_when_enabled = "Permitir duplicados de adjuntos"
         self.setText("Permitir duplicados")
         self.toggled.connect(self.change_global_allow_duplicate_attachments)
 

@@ -27,14 +27,14 @@ class AudioSetDefaultCheckBox(QCheckBox):
 
         if self.isEnabled():
             self.setToolTip(
-                "<nobr>establecer el nuevo audio como la pista de audio predeterminada al reproducir"
+                "<nobr>establecer el nuevo audio como pista de audio predeterminada al reproducir"
             )
             self.setToolTipDuration(12000)
         else:
             self.setToolTip(
-                "<nobr>establecer el nuevo audio como la pista de audio predeterminada al reproducir<br><b>Deshabilitado</b> porque "
+                "<nobr>establecer el nuevo audio como pista de audio predeterminada al reproducir<br><b>Deshabilitado</b> porque "
                 "la opción "
-                "<b>hacer este audio predeterminado</b> está activada en la pestaña de configuración de mezcla "
+                "<b>hacer este audio predeterminado</b> está activada en la pestaña de configuración de mux"
             )
             self.setToolTipDuration(12000)
 

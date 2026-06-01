@@ -1,18 +1,19 @@
 from PySide6 import QtGui
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QDoubleSpinBox,
-    QFormLayout,
     QGridLayout,
-    QHBoxLayout,
     QLabel,
-    QLineEdit,
     QPushButton,
+    QHBoxLayout,
+    QDoubleSpinBox,
+    QComboBox,
+    QLineEdit,
+    QCheckBox,
+    QFormLayout,
 )
 
-from packages.Startup import GlobalFiles, GlobalIcons
+from packages.Startup import GlobalFiles
+from packages.Startup import GlobalIcons
 from packages.Startup.Options import Options
 from packages.Widgets.InfoCellDialogTabComboBox import InfoCellDialogTabComboBox
 from packages.Widgets.MyDialog import MyDialog
@@ -38,14 +39,13 @@ class SubtitleInfoDialog(MyDialog):
         parent=None,
     ):
         super().__init__(parent)
-        self.window_title = "Información del subtítulo"
+        self.window_title = "Información de subtítulo"
+        self.state = "no"
         self.state = "no"
         self.subtitles_count = len(subtitles_delay)
 
         self.messageIcon = QLabel()
-        self.subtitle_tab_comboBox = InfoCellDialogTabComboBox(
-            hint="Grupos de subtítulos"
-        )
+        self.subtitle_tab_comboBox = InfoCellDialogTabComboBox(hint="Grupos de subtítulos")
         for i in range(self.subtitles_count):
             self.subtitle_tab_comboBox.addItem("Subtítulo #" + str(i + 1))
         self.subtitle_tab_comboBox.setCurrentIndex(0)
@@ -79,8 +79,7 @@ class SubtitleInfoDialog(MyDialog):
         for i in range(len(self.current_subtitle_name)):
             width_to_be_fixed = max(
                 width_to_be_fixed,
-                self.subtitle_name_value
-                .fontMetrics()
+                self.subtitle_name_value.fontMetrics()
                 .boundingRect(self.current_subtitle_name[i])
                 .width(),
             )
@@ -93,7 +92,7 @@ class SubtitleInfoDialog(MyDialog):
         self.subtitle_language_comboBox = QComboBox()
         self.setup_subtitle_language_comboBox()
 
-        self.subtitle_track_name_label = QLabel("Nombre de la pista de subtítulo:")
+        self.subtitle_track_name_label = QLabel("Nombre de pista de subtítulo:")
         self.subtitle_track_name_lineEdit = QLineEdit()
         self.setup_subtitle_track_name_lineEdit()
 
@@ -107,7 +106,7 @@ class SubtitleInfoDialog(MyDialog):
 
         self.yes_button = QPushButton("Aceptar")
         self.no_button = QPushButton("Cancelar")
-        self.reset_button = QPushButton("Restablecer valores predeterminados")
+        self.reset_button = QPushButton("Restablecer a valores predeterminados")
 
         self.buttons_layout = QHBoxLayout()
         self.subtitle_delay_layout = QHBoxLayout()
@@ -161,9 +160,7 @@ class SubtitleInfoDialog(MyDialog):
             subtitle_icon_path = GlobalFiles.SubtitleDarkIconPath
         else:
             subtitle_icon_path = GlobalFiles.SubtitleLightIconPath
-        self.messageIcon.setPixmap(
-            QtGui.QPixmap(subtitle_icon_path).scaledToHeight(100)
-        )
+        self.messageIcon.setPixmap(QtGui.QPixmap(subtitle_icon_path).scaledToHeight(100))
         self.set_dialog_values()
         self.set_default_buttons()
         if self.subtitle_set_default_disabled:
@@ -202,11 +199,11 @@ class SubtitleInfoDialog(MyDialog):
         self.reset_button.clicked.connect(self.reset_subtitle_setting)
 
     def click_yes(self):
-        self.state = "yes"  # ← No traducir
+        self.state = "yes"
         self.close()
 
     def click_no(self):
-        self.state = "no"  # ← No traducir
+        self.state = "no"
         self.close()
 
     def set_dialog_values(self):
@@ -240,9 +237,7 @@ class SubtitleInfoDialog(MyDialog):
             )
         )
         self.subtitle_language_comboBox.setMaxVisibleItems(8)
-        self.subtitle_language_comboBox.setStyleSheet(
-            "QComboBox { combobox-popup: 0; }"
-        )
+        self.subtitle_language_comboBox.setStyleSheet("QComboBox { combobox-popup: 0; }")
 
     def setup_subtitle_delay_spin(self):
         # self.subtitle_delay_spin.setMaximumWidth(screen_size.width() // 16)
@@ -345,26 +340,28 @@ class SubtitleInfoDialog(MyDialog):
     def setup_tool_tip_hint_subtitle_set_default(self):
         if self.subtitle_set_default_checkBox.isEnabled():
             self.subtitle_set_default_checkBox.setToolTip(
-                "<nobr>establecer este subtítulo como la pista de subtítulo predeterminada al reproducir"
+                "<nobr>establecer este subtítulo como pista de subtítulos predeterminada al reproducir"
             )
             self.subtitle_set_default_checkBox.setToolTipDuration(12000)
         else:
             self.subtitle_set_default_checkBox.setToolTip(
-                "<nobr>establecer este subtítulo como la pista de subtítulo predeterminada al reproducir<br><b>Deshabilitado</b> porque "
-                "la opción <b>hacer este subtítulo predeterminado</b> está activada en la pestaña de configuración de mezcla"
+                "<nobr>establecer este subtítulo como pista de subtítulos predeterminada al reproducir<br><b>Deshabilitado</b> porque "
+                "la opción "
+                "<b>hacer este subtítulo predeterminado</b> está activada en la pestaña de configuración de mux"
             )
             self.subtitle_set_default_checkBox.setToolTipDuration(12000)
 
     def setup_tool_tip_hint_subtitle_set_forced(self):
         if self.subtitle_set_forced_checkBox.isEnabled():
             self.subtitle_set_forced_checkBox.setToolTip(
-                "<nobr>establecer este subtítulo como la pista de subtítulo forzada al reproducir"
+                "<nobr>establecer este subtítulo como pista de subtítulos forzada al reproducir"
             )
             self.subtitle_set_forced_checkBox.setToolTipDuration(12000)
         else:
             self.subtitle_set_forced_checkBox.setToolTip(
-                "<nobr>establecer este subtítulo como la pista de subtítulo forzada al reproducir<br><b>Deshabilitado</b> porque "
-                "la opción <b>hacer este subtítulo predeterminado y forzado</b> está activada en la pestaña de configuración de mezcla"
+                "<nobr>establecer este subtítulo como pista de subtítulos forzada al reproducir<br><b>Deshabilitado</b> porque "
+                "la opción "
+                "<b>hacer este subtítulo predeterminado y forzado</b> está activada en la pestaña de configuración de mux"
             )
             self.subtitle_set_forced_checkBox.setToolTipDuration(12000)
 

@@ -2,8 +2,8 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QTabWidget
 
 from packages.Startup.PreDefined import (
-    AllAudiosLanguages,
     AllSubtitlesLanguages,
+    AllAudiosLanguages,
     AllVideosLanguages,
 )
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -47,7 +47,6 @@ class ModifyOldTracksTabsManager(QTabWidget):
         self.audio_tab.selected_track_changed.connect(
             self.update_current_selected_audio_track
         )
-        self.setCurrentIndex(1)  # la pestaña actual es la de subtítulos
 
     def update_current_selected_video_track(self, new_track_id):
         self.current_selected_track_changed.emit(["video", new_track_id])

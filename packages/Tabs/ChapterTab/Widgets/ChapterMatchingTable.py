@@ -1,6 +1,6 @@
 from PySide6.QtCore import Signal
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QTableWidgetItem
+from PySide6.QtWidgets import QHeaderView, QTableWidgetItem, QAbstractItemView
 
 from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -28,16 +28,12 @@ class ChapterMatchingTable(TableFixedHeaderWidget):
 
     def clear_table(self):
         self.table.setRowCount(0)
-        self.table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
-        )
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
     def show_files(self):
         files_list = GlobalSetting.CHAPTER_FILES_LIST
         self.table.setRowCount(len(files_list))
-        self.table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
-        )
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         for i in range(len(files_list)):
             item = QTableWidgetItem(" " + files_list[i])
             item.setToolTip(files_list[i])
@@ -45,9 +41,7 @@ class ChapterMatchingTable(TableFixedHeaderWidget):
             item = QTableWidgetItem(str(i + 1))
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.table.setVerticalHeaderItem(i, item)
-        self.current_files_list = files_list[
-            :
-        ]  # for copy the rel elements not refrences
+        self.current_files_list = files_list[:]  # for copy the rel elements not refrences
 
     def show_files_after_swapping_deleting(self):
         files_list = GlobalSetting.CHAPTER_FILES_LIST

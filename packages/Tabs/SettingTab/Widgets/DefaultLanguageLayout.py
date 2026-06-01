@@ -21,7 +21,7 @@ class DefaultLanguageLayout:
             items_list=languages_list, default_item=default_language
         )
         self.setup_all_labels_list()
-        if self.label.text().find("Subtitle") != -1:
+        if self.label.text().find("subtítulo") != -1:
             self.setting_button = SubtitleLanguageOrderButton(
                 current_language_list=languages_list
             )
@@ -36,7 +36,7 @@ class DefaultLanguageLayout:
 
     def setup_all_labels_list(self):
         self.all_labels_first_column_list.append("Extensiones de audio: ")
-        self.all_labels_second_column_list.append("Extensiones de subtítulos: ")
+        self.all_labels_second_column_list.append("Extensiones de subtítulo: ")
 
     def setup_layout(self):
         return
@@ -49,8 +49,7 @@ class DefaultLanguageLayout:
         for i in range(len(self.all_labels_first_column_list)):
             width_to_be_fixed = max(
                 width_to_be_fixed,
-                self.label
-                .fontMetrics()
+                self.label.fontMetrics()
                 .boundingRect(self.all_labels_first_column_list[i])
                 .width(),
             )
@@ -61,8 +60,7 @@ class DefaultLanguageLayout:
         for i in range(len(self.all_labels_second_column_list)):
             width_to_be_fixed = max(
                 width_to_be_fixed,
-                self.label
-                .fontMetrics()
+                self.label.fontMetrics()
                 .boundingRect(self.all_labels_second_column_list[i])
                 .width(),
             )

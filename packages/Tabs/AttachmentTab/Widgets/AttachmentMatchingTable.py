@@ -3,13 +3,13 @@ from typing import List
 
 import PySide6
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QColor, Qt
+from PySide6.QtGui import Qt, QColor
 from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QTableWidgetItem
 
-from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.Options import Options
-from packages.Tabs.GlobalSetting import get_readable_filesize, sort_names_like_windows
+from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Widgets.PathData import PathData
+from packages.Tabs.GlobalSetting import sort_names_like_windows, get_readable_filesize
 from packages.Widgets.TableWidget import TableWidget
 
 
@@ -86,7 +86,7 @@ class AttachmentMatchingTable(TableWidget):
     def setup_columns(self):
         self.set_column_name(
             column_index=self.column_ids["Name"],
-            name="Carpeta/Nombre de archivo",
+            name="Nombre de carpeta/archivo",
             alignment=Qt.AlignmentFlag.AlignCenter,
         )
         self.set_column_name(
@@ -107,8 +107,7 @@ class AttachmentMatchingTable(TableWidget):
         self.setColumnWidth(
             self.column_ids["Size"],
             min(
-                self.columnWidth(self.column_ids["Name"]) // 2,
-                screen_size.width() // 14,
+                self.columnWidth(self.column_ids["Name"]) // 2, screen_size.width() // 14
             ),
         )
 

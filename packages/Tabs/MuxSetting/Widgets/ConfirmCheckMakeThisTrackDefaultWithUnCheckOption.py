@@ -1,7 +1,8 @@
-from PySide6 import QtCore, QtGui
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6 import QtGui, QtCore
+from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton, QHBoxLayout
 
-from packages.Startup import GlobalFiles, GlobalIcons
+from packages.Startup import GlobalFiles
+from packages.Startup import GlobalIcons
 from packages.Widgets.MyDialog import MyDialog
 
 
@@ -12,11 +13,11 @@ class ConfirmCheckMakeThisTrackDefaultWithUnCheckOption(MyDialog):
         self.yesButton = QPushButton("Aceptar")
         self.noButton = QPushButton("Cancelar")
         self.thirdButton = QPushButton("Desmarcar este")
-        self.setWindowTitle("Confirmar desmarcado")
+        self.setWindowTitle("Confirmar marcado")
         self.setWindowIcon(GlobalIcons.QuestionIcon)
         self.message = QLabel(
-            "<nobr>¿Estás seguro?<br>Esto <b>desmarcará</b> las opciones de establecer predeterminado y establecer forzado desde la pestaña de "
-            + self.track_type
+            "<nobr>¿Estás seguro?<br>Esto <b>desmarcará</b> las opciones establecer como predeterminado y establecer como forzado "
+            "de la pestaña de " + self.track_type
         )
         self.messageIcon = QLabel()
 
@@ -27,9 +28,7 @@ class ConfirmCheckMakeThisTrackDefaultWithUnCheckOption(MyDialog):
         self.main_layout_spacer_item = QLabel()
         self.main_layout = QGridLayout()
         self.main_layout.addWidget(self.messageIcon, 0, 0, 2, 1)
-        self.main_layout.addWidget(
-            self.main_layout_spacer_item, 0, 1, 1, 1
-        )  # add space
+        self.main_layout.addWidget(self.main_layout_spacer_item, 0, 1, 1, 1)  # add space
         self.main_layout.addWidget(self.message, 0, 2, 2, 3)
         self.main_layout.addLayout(self.buttons_layout, 2, 4, 1, 1)
         self.main_layout.setContentsMargins(20, 20, 20, 20)

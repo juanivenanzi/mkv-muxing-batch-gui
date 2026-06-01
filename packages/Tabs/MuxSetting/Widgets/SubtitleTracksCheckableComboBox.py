@@ -1,5 +1,4 @@
 from PySide6.QtCore import Qt
-
 from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.PreDefined import AllSubtitlesTracks
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -9,13 +8,17 @@ from packages.Tabs.MuxSetting.Widgets.TracksCheckableComboBox import (
 
 
 class SubtitleTracksCheckableComboBox(TracksCheckableComboBox):
+
     def __init__(self):
         super().__init__()
         self.addItems(AllSubtitlesTracks)
         self.setMinimumWidth(screen_size.width() // 12)
         self.setMaximumWidth(screen_size.width() // 4)
         self.setDisabled(True)
-        self.empty_selection_hint_string = "Descartar todas las pistas de subtítulo del archivo fuente<br>esta opción dará como resultado un video de salida SIN subtítulos antiguos<br>[los nuevos archivos de subtítulo existirán] "
+        self.empty_selection_hint_string = (
+            "Descartar todas las pistas de subtítulos del archivo de origen<br>esta opción dará como resultado "
+            "un video de salida SIN subtítulos antiguos<br>[los nuevos archivos de subtítulos existirán] "
+        )
 
     def check_box_state_changed(self, state):
         if state == Qt.CheckState.Checked.value:

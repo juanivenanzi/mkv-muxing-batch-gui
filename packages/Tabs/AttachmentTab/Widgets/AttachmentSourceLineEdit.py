@@ -14,7 +14,7 @@ class AttachmentSourceLineEdit(QLineEdit):
 
     def __init__(self):
         super().__init__()
-        self.setPlaceholderText("Ingrese la ruta de la carpeta de archivos adjuntos")
+        self.setPlaceholderText("Ingresa la ruta de la carpeta de adjuntos")
         self.setText("")
         self.setClearButtonEnabled(True)
         self.stop_check_path = False

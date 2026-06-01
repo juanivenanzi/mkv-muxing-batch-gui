@@ -1,11 +1,11 @@
-from PySide6 import QtCore, QtGui
+from PySide6 import QtGui, QtCore
 from PySide6.QtWidgets import (
-    QApplication,
     QGridLayout,
-    QHBoxLayout,
     QLabel,
-    QPushButton,
+    QApplication,
     QStyle,
+    QPushButton,
+    QHBoxLayout,
 )
 
 from packages.Widgets.MyDialog import MyDialog
@@ -14,9 +14,7 @@ from packages.Widgets.MyDialog import MyDialog
 def get_pixmap_from_info_icon():
     style = QApplication.style()
     size = style.pixelMetric(QStyle.PixelMetric.PM_MessageBoxIconSize, None, None)
-    icon = style.standardIcon(
-        QStyle.StandardPixmap.SP_MessageBoxInformation, None, None
-    )
+    icon = style.standardIcon(QStyle.StandardPixmap.SP_MessageBoxInformation, None, None)
     return icon.pixmap(size, size)
 
 
@@ -37,12 +35,12 @@ def get_pixmap_from_critical_icon():
 class ConfirmUsingMkvpropedit(MyDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.fast_muxing_button = QPushButton("Mezcla rápida")
+        self.fast_muxing_button = QPushButton("Multiplexado rápido")
         self.cancel_button = QPushButton("Cancelar")
-        self.usual_muxing_button = QPushButton("Mezcla normal")
+        self.usual_muxing_button = QPushButton("Multiplexado normal")
         self.setWindowTitle("Podemos hacerlo más rápido")
         self.message = QLabel(
-            "<nobr>Podemos acelerar tu mezcla editando los archivos fuente directamente <br>Esto "
+            "<nobr>Podemos acelerar tu multiplexado editando los archivos de origen directamente <br>Esto "
             "<b>sobrescribirá</b> tus archivos de video y no se puede deshacer"
         )
         self.messageIcon = QLabel()
@@ -54,9 +52,7 @@ class ConfirmUsingMkvpropedit(MyDialog):
         self.main_layout_spacer_item = QLabel()
         self.main_layout = QGridLayout()
         self.main_layout.addWidget(self.messageIcon, 0, 0, 2, 1)
-        self.main_layout.addWidget(
-            self.main_layout_spacer_item, 0, 1, 1, 1
-        )  # add space
+        self.main_layout.addWidget(self.main_layout_spacer_item, 0, 1, 1, 1)  # add space
         self.main_layout.addWidget(self.message, 0, 2, 2, 3)
         self.main_layout.addLayout(self.buttons_layout, 2, 4, 1, 1)
         self.main_layout.setContentsMargins(20, 20, 20, 20)

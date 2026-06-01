@@ -2,11 +2,11 @@ import sys
 
 import PySide6
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QColor, Qt
+from PySide6.QtGui import Qt, QColor
 from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QTableWidgetItem
 
-from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.Options import Options
+from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Tabs.GlobalSetting import GlobalSetting, sort_names_like_windows
 from packages.Widgets.TableWidget import TableWidget
 
@@ -98,8 +98,7 @@ class AttachmentTable(TableWidget):
         self.setColumnWidth(
             self.column_ids["Size"],
             min(
-                self.columnWidth(self.column_ids["Name"]) // 2,
-                screen_size.width() // 14,
+                self.columnWidth(self.column_ids["Name"]) // 2, screen_size.width() // 14
             ),
         )
 
@@ -156,9 +155,7 @@ class AttachmentTable(TableWidget):
             self.update_selected_row(row_index=attachment_index)
             if attachment_index < len(GlobalSetting.ATTACHMENT_FILES_CHECKING_LIST):
                 if item.checkState() == Qt.CheckState.Unchecked:
-                    GlobalSetting.ATTACHMENT_FILES_CHECKING_LIST[attachment_index] = (
-                        False
-                    )
+                    GlobalSetting.ATTACHMENT_FILES_CHECKING_LIST[attachment_index] = False
                     self.update_row_text_color(
                         row_index=attachment_index, status="disable"
                     )
@@ -168,9 +165,7 @@ class AttachmentTable(TableWidget):
                         ]
                     )
                 elif item.checkState() == Qt.CheckState.Checked:
-                    GlobalSetting.ATTACHMENT_FILES_CHECKING_LIST[attachment_index] = (
-                        True
-                    )
+                    GlobalSetting.ATTACHMENT_FILES_CHECKING_LIST[attachment_index] = True
                     self.update_row_text_color(
                         row_index=attachment_index, status="activate"
                     )

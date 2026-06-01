@@ -1,9 +1,9 @@
-from PySide6.QtCore import QEvent, QSize, Qt, Signal
+from PySide6.QtCore import Signal, Qt, QSize, QEvent
 from PySide6.QtWidgets import QComboBox, QStyledItemDelegate
 
 from packages.Startup import GlobalIcons
-from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.Options import Options
+from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.SetupThems import get_dark_palette, get_light_palette
 from packages.Tabs.GlobalSetting import GlobalSetting
 
@@ -82,11 +82,11 @@ class AudioTabComboBox(QComboBox):
         super().setToolTip(new_tool_tip)
 
     def check_selected(self, new_selected):
-        if self.itemText(new_selected).find("New") != -1:
+        if self.itemText(new_selected).find("Nuevo") != -1:
             self.create_new_tab_signal.emit()
             self.removeItem(self.count() - 1)
             self.addItem(self.name + " #" + str(self.count() + 1))
-            self.addItem(GlobalIcons.PlusIcon, "New")
+            self.addItem(GlobalIcons.PlusIcon, "Nuevo")
             self.setCurrentIndex(self.count() - 2)
 
         else:
@@ -96,8 +96,6 @@ class AudioTabComboBox(QComboBox):
         self.lineEdit().deselect()
 
     def eventFilter(self, object, event):
-        if str(event.__class__).find("Event") == -1:
-            return False
         if str(event.__class__).find("Event") == -1:
             return False
         try:
@@ -136,12 +134,12 @@ class AudioTabComboBox(QComboBox):
             self.setItemText(i, self.name + " #" + str(i + 1))
 
     def hide_new_tab_option(self):
-        if self.itemText(self.count() - 1).find("New") != -1:
+        if self.itemText(self.count() - 1).find("Nuevo") != -1:
             self.removeItem(self.count() - 1)
 
     def show_new_tab_option(self):
-        if self.itemText(self.count() - 1).find("New") == -1:
-            self.addItem(GlobalIcons.PlusIcon, "New")
+        if self.itemText(self.count() - 1).find("Nuevo") == -1:
+            self.addItem(GlobalIcons.PlusIcon, "Nuevo")
 
     def update_theme_mode_state(self):
         if Options.Dark_Mode:

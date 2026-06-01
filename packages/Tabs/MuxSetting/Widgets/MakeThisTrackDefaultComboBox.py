@@ -1,10 +1,10 @@
 import PySide6
 from PySide6.QtCore import QEvent
-from PySide6.QtGui import QFontMetrics, Qt
+from PySide6.QtGui import Qt, QFontMetrics
 from PySide6.QtWidgets import QComboBox
 
-from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.Options import Options
+from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.PreDefined import AllAudiosTracks
 from packages.Startup.SetupThems import get_dark_palette, get_light_palette
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -16,7 +16,9 @@ class MakeThisTrackDefaultComboBox(QComboBox):
         self.current_list = []
         self.current_text = ""
         self.empty_selection_string = "Ninguno"
-        self.empty_selection_hint_string = "La bandera seleccionada [predeterminado/forzado/ambos] se eliminará de todas las pistas correspondientes"
+        self.empty_selection_hint_string = (
+            "La bandera seleccionada [predeterminado/forzado/ambas] se eliminará de todas las pistas correspondientes"
+        )
         self.addItems(AllAudiosTracks)
         self.setMinimumWidth(screen_size.width() // 12)
         self.setMaximumWidth(screen_size.width() // 4)
@@ -79,21 +81,21 @@ class MakeThisTrackDefaultComboBox(QComboBox):
 
     def disable_track_id_text_from_being_selected(self):
         for i in range(self.count()):
-            if self.itemText(i) == "---Track Id---":
+            if self.itemText(i) == "---ID de pista---":
                 self.model().item(i).setEnabled(False)
                 self.model().item(i).setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 break
 
     def disable_track_language_text_from_being_selected(self):
         for i in range(self.count()):
-            if self.itemText(i) == "---Language---":
+            if self.itemText(i) == "---Idioma---":
                 self.model().item(i).setEnabled(False)
                 self.model().item(i).setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 break
 
     def disable_track_name_text_from_being_selected(self):
         for i in range(self.count()):
-            if self.itemText(i) == "---Track Name---":
+            if self.itemText(i) == "---Nombre de pista---":
                 self.model().item(i).setEnabled(False)
                 self.model().item(i).setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 break
@@ -138,9 +140,9 @@ class MakeThisTrackDefaultComboBox(QComboBox):
         super().addItems(texts)
         for i in range(len(texts)):
             if (
-                texts[i] != "---Track Id---"
-                and texts[i] != "---Language---"
-                and texts[i] != "---Track Name---"
+                texts[i] != "---ID de pista---"
+                and texts[i] != "---Idioma---"
+                and texts[i] != "---Nombre de pista---"
             ):
                 self.setItemData(i, texts[i], Qt.ItemDataRole.ToolTipRole)
         self.current_list = texts.copy()
@@ -165,13 +167,13 @@ class MakeThisTrackDefaultComboBox(QComboBox):
         text = ""
         current_tracks = "None"
         for i in range(self.model().rowCount()):
-            if self.model().item(i).text() == "---Track Id---":
+            if self.model().item(i).text() == "---ID de pista---":
                 current_tracks = "id"
                 continue
-            elif self.model().item(i).text() == "---Language---":
+            elif self.model().item(i).text() == "---Idioma---":
                 current_tracks = "lang"
                 continue
-            elif self.model().item(i).text() == "---Track Name---":
+            elif self.model().item(i).text() == "---Nombre de pista---":
                 current_tracks = "name"
                 continue
             if self.currentIndex() == i:
@@ -189,7 +191,7 @@ class MakeThisTrackDefaultComboBox(QComboBox):
         self.tracks_language = tracks_languages_text
         self.tracks_name = tracks_name_text
         if count_tracks_id > 0:
-            tracks_id_text = "Id de pista: [" + ", ".join(tracks_id_text) + "]"
+            tracks_id_text = "ID de pista: [" + ", ".join(tracks_id_text) + "]"
             text = tracks_id_text
         if count_tracks_languages > 0:
             tracks_languages_text = "Idioma: [" + ", ".join(tracks_languages_text) + "]"

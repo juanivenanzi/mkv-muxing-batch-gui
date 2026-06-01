@@ -35,7 +35,7 @@ class MoveAttachmentToButton(QPushButton):
                 self.selected_row_after_swap.emit(new_index)
 
     def setup_tool_tip_hint(self):
-        self.setToolTip("Move To")
+        self.setToolTip("Mover a")
         self.setToolTipDuration(3000)
 
     def setEnabled(self, new_state: bool):

@@ -13,7 +13,7 @@ class VideoInfoDialog(MyDialog):
         self.main_layout = QVBoxLayout()
         self.tree = MediaInfoTreeWidget()
         self.expand_all_button = QPushButton("Expandir todo")
-        self.collapse_all_button = QPushButton("Contraer todo")
+        self.collapse_all_button = QPushButton("Colapsar todo")
         self.button_layout = QHBoxLayout()
         self.setup_button_layout()
         self.setup_main_layout()

@@ -1,13 +1,13 @@
-import logging
-import subprocess
 import sys
 import webbrowser
-
-from PySide6 import QtCore, QtGui
+import subprocess
+import logging
+from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton, QHBoxLayout
 
-from packages.Startup import GlobalFiles, GlobalIcons
+from packages.Startup import GlobalFiles
+from packages.Startup import GlobalIcons
 from packages.Widgets.MyDialog import MyDialog
 
 
@@ -40,12 +40,7 @@ class OkDialog(MyDialog):
 
         self.main_layout = QGridLayout()
         self.main_layout.addWidget(
-            self.mux_good_photo_label,
-            0,
-            0,
-            3,
-            4,
-            alignment=Qt.AlignmentFlag.AlignCenter,
+            self.mux_good_photo_label, 0, 0, 3, 4, alignment=Qt.AlignmentFlag.AlignCenter
         )
         self.main_layout.addLayout(self.buttons_layout, 3, 1, 1, 2)
         self.main_layout.setContentsMargins(10, 20, 10, 20)

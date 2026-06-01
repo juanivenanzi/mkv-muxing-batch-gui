@@ -15,7 +15,7 @@ class AudioSourceLineEdit(QLineEdit):
 
     def __init__(self):
         super().__init__()
-        self.setPlaceholderText("Ingrese la ruta de la carpeta de audio")
+        self.setPlaceholderText("Ingresa la ruta de la carpeta de audio")
         self.setClearButtonEnabled(True)
         self.setText("")
         self.stop_check_path = False

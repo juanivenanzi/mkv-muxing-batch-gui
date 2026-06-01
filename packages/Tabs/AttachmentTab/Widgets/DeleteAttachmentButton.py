@@ -28,7 +28,7 @@ class DeleteAttachmentButton(QPushButton):
             self.selected_row_after_delete.emit(current_index)
 
     def setup_tool_tip_hint(self):
-        self.setToolTip("Eliminar archivo adjunto (Borrar)")
+        self.setToolTip("Eliminar adjunto (Suprimir)")
         self.setToolTipDuration(3000)
 
     def setEnabled(self, new_state: bool):

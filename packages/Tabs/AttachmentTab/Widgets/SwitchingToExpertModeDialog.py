@@ -1,8 +1,9 @@
-from PySide6 import QtCore, QtGui
+from PySide6 import QtGui, QtCore
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton, QHBoxLayout, QCheckBox
 
-from packages.Startup import GlobalFiles, GlobalIcons
+from packages.Startup import GlobalFiles
+from packages.Startup import GlobalIcons
 from packages.Widgets.MyDialog import MyDialog
 
 
@@ -19,7 +20,7 @@ class SwitchingToExpertModeDialog(MyDialog):
         self.info_message = (
             "En este modo puedes adjuntar archivo/carpeta para cada video por separado"
         )
-        self.window_title = "Cambiando al modo experto"
+        self.window_title = "Cambiar a modo experto"
         self.result = "Cancel"
         self.show_message_result = "Yes"
         self.message = QLabel()
@@ -36,9 +37,7 @@ class SwitchingToExpertModeDialog(MyDialog):
         self.main_layout.addWidget(
             self.messageIcon, 0, 0, 3, 1, alignment=Qt.AlignmentFlag.AlignVCenter
         )
-        self.main_layout.addWidget(
-            self.main_layout_spacer_item, 0, 1, 1, 1
-        )  # add space
+        self.main_layout.addWidget(self.main_layout_spacer_item, 0, 1, 1, 1)  # add space
         self.main_layout.addWidget(self.message, 0, 2, 2, 3)
         self.main_layout.addWidget(self.show_message_again, 1, 2, 2, 3)
         self.main_layout.addLayout(

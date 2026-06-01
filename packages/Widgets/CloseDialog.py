@@ -1,15 +1,16 @@
-from PySide6 import QtCore, QtGui
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6 import QtGui, QtCore
+from PySide6.QtWidgets import QGridLayout, QLabel, QPushButton, QHBoxLayout
 
-from packages.Startup import GlobalFiles, GlobalIcons
+from packages.Startup import GlobalFiles
+from packages.Startup import GlobalIcons
 from packages.Widgets.MyDialog import MyDialog
 
 
 class CloseDialog(MyDialog):
     """
-    Clase CloseDialog para crear un diálogo de salida con botón de confirmación.
-    Puedes verificar el resultado después de llamar a `CloseDialog.execute()`
-    verificando el valor de `CloseDialog.result`, que puede ser [Cancelar/Salir]
+    CloseDialog class to create an exit dialog with confirmation button
+    You can check for result after calling `CloseDialog.execute()`
+    By checking of value `CloseDialog.result` which can be either [Cancel/Exit]
     """
 
     def __init__(
@@ -29,9 +30,7 @@ class CloseDialog(MyDialog):
         self.main_layout_spacer_item = QLabel()
         self.main_layout = QGridLayout()
         self.main_layout.addWidget(self.messageIcon, 0, 0, 2, 1)
-        self.main_layout.addWidget(
-            self.main_layout_spacer_item, 0, 1, 1, 1
-        )  # add space
+        self.main_layout.addWidget(self.main_layout_spacer_item, 0, 1, 1, 1)  # add space
         self.main_layout.addWidget(self.message, 0, 2, 2, 3)
         self.main_layout.addLayout(self.buttons_layout, 2, 0, -1, -1)
         self.main_layout.setContentsMargins(20, 20, 20, 20)

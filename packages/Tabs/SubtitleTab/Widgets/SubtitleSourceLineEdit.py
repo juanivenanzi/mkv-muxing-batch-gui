@@ -17,7 +17,7 @@ class SubtitleSourceLineEdit(QLineEdit):
 
     def __init__(self):
         super().__init__()
-        self.setPlaceholderText("Ingrese la ruta de la carpeta de subtítulos")
+        self.setPlaceholderText("Ingresa la ruta de la carpeta de subtítulos")
         self.setClearButtonEnabled(True)
         self.setText("")
         self.stop_check_path = False
@@ -51,9 +51,7 @@ class SubtitleSourceLineEdit(QLineEdit):
                     if self.is_there_old_files:
                         reload_dialog = ReloadSubtitleFilesDialog(parent=self)
                         reload_dialog.execute()
-                        if (
-                            reload_dialog.result == "Yes"
-                        ):  # ← No traducir, valor interno
+                        if reload_dialog.result == "Yes":
                             self.is_drag_and_drop = False
                             self.set_is_drag_and_drop_signal.emit(False)
                             self.stop_check_path = True

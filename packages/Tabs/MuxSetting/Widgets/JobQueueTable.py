@@ -3,11 +3,11 @@ import time
 from pathlib import Path
 
 from PySide6.QtCore import QThread, Signal
-from PySide6.QtGui import QFontMetrics, Qt
-from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QLabel, QTableWidgetItem
+from PySide6.QtGui import Qt, QFontMetrics
+from PySide6.QtWidgets import QAbstractItemView, QTableWidgetItem, QHeaderView, QLabel
 
-from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.Options import Options
+from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Tabs.GlobalSetting import GlobalSetting, get_readable_filesize
 from packages.Tabs.MuxSetting.Widgets.ConfirmUsingMkvpropedit import (
     ConfirmUsingMkvpropedit,
@@ -43,11 +43,7 @@ def generate_tool_tip_for_chapter_file(
             + "\nDoble clic para más detalles"
         )
     else:
-        return (
-            "Nombre del capítulo: "
-            + str(chapter_name)
-            + "\nDoble clic para más detalles"
-        )
+        return "Nombre del capítulo: " + str(chapter_name) + "\nDoble clic para más detalles"
 
 
 def generate_tool_tip_for_audio_file(
@@ -71,7 +67,7 @@ def generate_tool_tip_for_audio_file(
             + "s"
             + "\nIdioma del audio: "
             + str(audio_language)
-            + "\nNombre de la pista de audio: "
+            + "\nNombre de pista de audio: "
             + str(audio_track_name)
             + "\nEstablecer como predeterminado: "
             + str(audio_set_default)
@@ -88,7 +84,7 @@ def generate_tool_tip_for_audio_file(
             + "s"
             + "\nIdioma del audio: "
             + str(audio_language)
-            + "\nNombre de la pista de audio: "
+            + "\nNombre de pista de audio: "
             + str(audio_track_name)
             + "\nEstablecer como predeterminado: "
             + str(audio_set_default)
@@ -119,7 +115,7 @@ def generate_tool_tip_for_subtitle_file(
             + "s"
             + "\nIdioma del subtítulo: "
             + str(subtitle_language)
-            + "\nNombre de la pista de subtítulo: "
+            + "\nNombre de pista de subtítulo: "
             + str(subtitle_track_name)
             + "\nEstablecer como predeterminado: "
             + str(subtitle_set_default)
@@ -136,7 +132,7 @@ def generate_tool_tip_for_subtitle_file(
             + "s"
             + "\nIdioma del subtítulo: "
             + str(subtitle_language)
-            + "\nNombre de la pista de subtítulo: "
+            + "\nNombre de pista de subtítulo: "
             + str(subtitle_track_name)
             + "\nEstablecer como predeterminado: "
             + str(subtitle_set_default)
@@ -258,10 +254,8 @@ def get_file_name_with_crc(file_name, crc_string):
 
 def calculate_size_after_muxing(finished_job: SingleJobData):
     try:
-        output_video_size_bytes = os.path.getsize(
-            finished_job.output_video_absolute_path
-        )
-    except:
+        output_video_size_bytes = os.path.getsize(finished_job.output_video_absolute_path)
+    except Exception:
         output_video_size_bytes = 0
     return output_video_size_bytes
 
@@ -312,27 +306,13 @@ class JobQueueTable(TableWidget):
 
     def setup_horizontal_header(self):
         self.horizontalHeader().setHighlightSections(False)
-        self.horizontal_header.setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Interactive
-        )
-        self.horizontal_header.setSectionResizeMode(
-            1, QHeaderView.ResizeMode.Interactive
-        )
-        self.horizontal_header.setSectionResizeMode(
-            2, QHeaderView.ResizeMode.Interactive
-        )
-        self.horizontal_header.setSectionResizeMode(
-            3, QHeaderView.ResizeMode.Interactive
-        )
-        self.horizontal_header.setSectionResizeMode(
-            4, QHeaderView.ResizeMode.Interactive
-        )
-        self.horizontal_header.setSectionResizeMode(
-            5, QHeaderView.ResizeMode.Interactive
-        )
-        self.horizontal_header.setSectionResizeMode(
-            6, QHeaderView.ResizeMode.Interactive
-        )
+        self.horizontal_header.setSectionResizeMode(0, QHeaderView.ResizeMode.Interactive)
+        self.horizontal_header.setSectionResizeMode(1, QHeaderView.ResizeMode.Interactive)
+        self.horizontal_header.setSectionResizeMode(2, QHeaderView.ResizeMode.Interactive)
+        self.horizontal_header.setSectionResizeMode(3, QHeaderView.ResizeMode.Interactive)
+        self.horizontal_header.setSectionResizeMode(4, QHeaderView.ResizeMode.Interactive)
+        self.horizontal_header.setSectionResizeMode(5, QHeaderView.ResizeMode.Interactive)
+        self.horizontal_header.setSectionResizeMode(6, QHeaderView.ResizeMode.Interactive)
         self.horizontal_header.setSectionResizeMode(7, QHeaderView.ResizeMode.Stretch)
 
     def create_horizontal_header(self):
@@ -359,7 +339,7 @@ class JobQueueTable(TableWidget):
         column.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setHorizontalHeaderItem(self.column_ids["Chapter"], column)
 
-        column = QTableWidgetItem("Tamaño original")
+        column = QTableWidgetItem("Tamaño antes")
         column.setTextAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setHorizontalHeaderItem(self.column_ids["Size Before"], column)
 
@@ -367,7 +347,7 @@ class JobQueueTable(TableWidget):
         column.setTextAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setHorizontalHeaderItem(self.column_ids["Progress"], column)
 
-        column = QTableWidgetItem("Tamaño final")
+        column = QTableWidgetItem("Tamaño después")
         column.setTextAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setHorizontalHeaderItem(self.column_ids["Size After"], column)
 
@@ -384,13 +364,9 @@ class JobQueueTable(TableWidget):
         self.setVerticalHeaderItem(new_row_id, vertical_header_item)
 
     def set_row_value_size_before_muxing(self, new_job, new_row_id):
-        new_job.size_before_muxing = (
-            " " + GlobalSetting.VIDEO_FILES_SIZE_LIST[new_row_id]
-        )
+        new_job.size_before_muxing = " " + GlobalSetting.VIDEO_FILES_SIZE_LIST[new_row_id]
         self.setCellWidget(
-            new_row_id,
-            self.column_ids["Size Before"],
-            QLabel(new_job.size_before_muxing),
+            new_row_id, self.column_ids["Size Before"], QLabel(new_job.size_before_muxing)
         )
 
     def set_row_value_size_after_muxing(self, finished_job: SingleJobData, row_index):
@@ -445,9 +421,7 @@ class JobQueueTable(TableWidget):
                 new_job.subtitle_delay.append(GlobalSetting.SUBTITLE_DELAY[i])
                 new_job.subtitle_language.append(GlobalSetting.SUBTITLE_LANGUAGE[i])
                 new_job.subtitle_track_name.append(GlobalSetting.SUBTITLE_TRACK_NAME[i])
-                new_job.subtitle_set_default.append(
-                    GlobalSetting.SUBTITLE_SET_DEFAULT[i]
-                )
+                new_job.subtitle_set_default.append(GlobalSetting.SUBTITLE_SET_DEFAULT[i])
                 new_job.subtitle_set_forced.append(GlobalSetting.SUBTITLE_SET_FORCED[i])
                 new_job.subtitle_set_at_top.append(GlobalSetting.SUBTITLE_SET_ORDER[i])
 
@@ -594,9 +568,7 @@ class JobQueueTable(TableWidget):
     def resize_column(self, column_index, old_width, new_width):
         if column_index == self.column_ids["Name"]:
             for i in range(self.rowCount()):
-                metrics = QFontMetrics(
-                    self.cellWidget(i, self.column_ids["Name"]).font()
-                )
+                metrics = QFontMetrics(self.cellWidget(i, self.column_ids["Name"]).font())
                 elided_text = metrics.elidedText(
                     self.data[i].video_name_with_spaces,
                     Qt.TextElideMode.ElideRight,
@@ -636,15 +608,11 @@ class JobQueueTable(TableWidget):
                     subtitles_name=self.data[row_index].subtitle_name.copy(),
                     subtitles_delay=self.data[row_index].subtitle_delay.copy(),
                     subtitles_language=self.data[row_index].subtitle_language.copy(),
-                    subtitles_track_name=self.data[
-                        row_index
-                    ].subtitle_track_name.copy(),
+                    subtitles_track_name=self.data[row_index].subtitle_track_name.copy(),
                     subtitles_set_default=self.data[
                         row_index
                     ].subtitle_set_default.copy(),
-                    subtitles_set_forced=self.data[
-                        row_index
-                    ].subtitle_set_forced.copy(),
+                    subtitles_set_forced=self.data[row_index].subtitle_set_forced.copy(),
                     subtitles_default_value_delay=subtitles_default_value_delay_list,
                     subtitles_default_value_language=subtitles_default_value_language,
                     subtitles_default_value_track_name=subtitles_default_value_track_name,
@@ -657,25 +625,19 @@ class JobQueueTable(TableWidget):
                 )
                 subtitle_info_dialog.execute()
                 if subtitle_info_dialog.state == "yes":
-                    self.data[
-                        row_index
-                    ].subtitle_delay = subtitle_info_dialog.current_subtitle_delay
-                    self.data[
-                        row_index
-                    ].subtitle_language = subtitle_info_dialog.current_subtitle_language
-                    self.data[
-                        row_index
-                    ].subtitle_track_name = (
+                    self.data[row_index].subtitle_delay = (
+                        subtitle_info_dialog.current_subtitle_delay
+                    )
+                    self.data[row_index].subtitle_language = (
+                        subtitle_info_dialog.current_subtitle_language
+                    )
+                    self.data[row_index].subtitle_track_name = (
                         subtitle_info_dialog.current_subtitle_track_name
                     )
-                    self.data[
-                        row_index
-                    ].subtitle_set_default = (
+                    self.data[row_index].subtitle_set_default = (
                         subtitle_info_dialog.current_subtitle_set_default
                     )
-                    self.data[
-                        row_index
-                    ].subtitle_set_forced = (
+                    self.data[row_index].subtitle_set_forced = (
                         subtitle_info_dialog.current_subtitle_set_forced
                     )
                     current_cell_widget = self.cellWidget(
@@ -686,14 +648,16 @@ class JobQueueTable(TableWidget):
                             tool_tip=generate_tool_tip_for_subtitle_file(
                                 subtitle_full_path=GlobalSetting.SUBTITLE_FILES_ABSOLUTE_PATH_LIST[
                                     0
-                                ][row_index],
+                                ][
+                                    row_index
+                                ],
                                 subtitle_name=GlobalSetting.SUBTITLE_FILES_LIST[0][
                                     row_index
                                 ],
                                 subtitle_delay=self.data[row_index].subtitle_delay[0],
-                                subtitle_language=self.data[
-                                    row_index
-                                ].subtitle_language[0],
+                                subtitle_language=self.data[row_index].subtitle_language[
+                                    0
+                                ],
                                 subtitle_track_name=self.data[
                                     row_index
                                 ].subtitle_track_name[0],
@@ -709,8 +673,8 @@ class JobQueueTable(TableWidget):
 
             else:
                 warning_dialog = WarningDialog(
-                    window_title="Información del subtítulo",
-                    info_message="¡No se encontraron subtítulos!",
+                    window_title="Información de subtítulo",
+                    info_message="¡No se encontró subtítulo!",
                     parent=self,
                 )
                 warning_dialog.execute()
@@ -757,21 +721,21 @@ class JobQueueTable(TableWidget):
                 )
                 audio_info_dialog.execute()
                 if audio_info_dialog.state == "yes":
-                    self.data[
-                        row_index
-                    ].audio_delay = audio_info_dialog.current_audio_delay
-                    self.data[
-                        row_index
-                    ].audio_language = audio_info_dialog.current_audio_language
-                    self.data[
-                        row_index
-                    ].audio_track_name = audio_info_dialog.current_audio_track_name
-                    self.data[
-                        row_index
-                    ].audio_set_default = audio_info_dialog.current_audio_set_default
-                    self.data[
-                        row_index
-                    ].audio_set_forced = audio_info_dialog.current_audio_set_forced
+                    self.data[row_index].audio_delay = (
+                        audio_info_dialog.current_audio_delay
+                    )
+                    self.data[row_index].audio_language = (
+                        audio_info_dialog.current_audio_language
+                    )
+                    self.data[row_index].audio_track_name = (
+                        audio_info_dialog.current_audio_track_name
+                    )
+                    self.data[row_index].audio_set_default = (
+                        audio_info_dialog.current_audio_set_default
+                    )
+                    self.data[row_index].audio_set_forced = (
+                        audio_info_dialog.current_audio_set_forced
+                    )
                     current_cell_widget = self.cellWidget(
                         row_index, self.column_ids["Audio"]
                     )
@@ -780,28 +744,24 @@ class JobQueueTable(TableWidget):
                             tool_tip=generate_tool_tip_for_audio_file(
                                 audio_full_path=GlobalSetting.AUDIO_FILES_ABSOLUTE_PATH_LIST[
                                     0
-                                ][row_index],
+                                ][
+                                    row_index
+                                ],
                                 audio_name=GlobalSetting.AUDIO_FILES_LIST[0][row_index],
                                 audio_delay=self.data[row_index].audio_delay[0],
                                 audio_language=self.data[row_index].audio_language[0],
-                                audio_track_name=self.data[row_index].audio_track_name[
+                                audio_track_name=self.data[row_index].audio_track_name[0],
+                                audio_set_default=self.data[row_index].audio_set_default[
                                     0
                                 ],
-                                audio_set_default=self.data[
-                                    row_index
-                                ].audio_set_default[0],
-                                audio_set_forced=self.data[row_index].audio_set_forced[
-                                    0
-                                ],
+                                audio_set_forced=self.data[row_index].audio_set_forced[0],
                                 show_full_path=False,
                             )
                         )
 
             else:
                 warning_dialog = WarningDialog(
-                    window_title="Información del audio",
-                    info_message="¡No se encontraron audios!",
-                    parent=self,
+                    window_title="Información de audio", info_message="¡No se encontró audio!", parent=self
                 )
                 warning_dialog.execute()
         elif column_index == self.column_ids["Chapter"]:
@@ -812,25 +772,21 @@ class JobQueueTable(TableWidget):
                 chapter_info_dialog.execute()
             else:
                 warning_dialog = WarningDialog(
-                    window_title="Información del capítulo",
-                    info_message="¡No se encontraron capítulos!",
+                    window_title="Información de capítulo",
+                    info_message="¡No se encontró capítulo!",
                     parent=self,
                 )
                 warning_dialog.execute()
         elif column_index == self.column_ids["Status"]:
             if self.data[row_index].error_occurred:
                 message = self.data[row_index].muxing_message
-                message += "\npuedes revisar el archivo de registro para más detalles"
+                message += "puedes revisar el archivo de registro para más detalles"
                 error_muxing_dialog = ErrorMuxingDialog(
-                    window_title="Error de multiplexación",
-                    info_message=message,
-                    parent=self,
+                    window_title="Error de multiplexado", info_message=message, parent=self
                 )
                 error_muxing_dialog.execute()
             elif self.data[row_index].done:
-                Ok_dialog = OkDialog(
-                    window_title="Multiplexación completada", parent=self
-                )
+                Ok_dialog = OkDialog(window_title="Multiplexado completado", parent=self)
                 Ok_dialog.execute()
 
     def show_necessary_columns(self):
@@ -905,9 +861,7 @@ class JobQueueTable(TableWidget):
         self.start_muxing_worker.finished_all_jobs_signal.connect(
             self.start_muxing_worker.deleteLater
         )
-        self.start_muxing_worker.finished_all_jobs_signal.connect(
-            self.finished_all_jobs
-        )
+        self.start_muxing_worker.finished_all_jobs_signal.connect(self.finished_all_jobs)
         self.start_muxing_worker.finished_paused_signal.connect(
             self.start_muxing_worker.deleteLater
         )
@@ -922,9 +876,7 @@ class JobQueueTable(TableWidget):
         )
         self.start_muxing_worker.progress_signal.connect(self.update_progress)
         self.start_muxing_worker.job_started_signal.connect(self.new_job_started)
-        self.start_muxing_worker.job_succeeded_signal.connect(
-            self.job_done_successfully
-        )
+        self.start_muxing_worker.job_succeeded_signal.connect(self.job_done_successfully)
         self.start_muxing_worker.job_failed_signal.connect(self.job_error_occurred)
         self.start_muxing_worker.pause_from_error_occurred_signal.connect(
             self.pause_from_error_occurred
@@ -988,10 +940,7 @@ class JobQueueTable(TableWidget):
             return os.path.join(folder_path, output_video_name)
 
     def get_output_file_name_folder_path_absolute(self, job_index):
-        if (
-            self.data[job_index].used_mkvpropedit
-            or GlobalSetting.OVERWRITE_SOURCE_FILES
-        ):
+        if self.data[job_index].used_mkvpropedit or GlobalSetting.OVERWRITE_SOURCE_FILES:
             return os.path.dirname(self.data[job_index].video_name_absolute)
 
         else:
@@ -1002,17 +951,13 @@ class JobQueueTable(TableWidget):
         self.data[job_index].progress = new_progress
         self.update_status_job_widget(new_progress)
         self.total_progress += self.data[job_index].progress
-        self.cellWidget(params.index, self.column_ids["Progress"]).setValue(
-            new_progress
-        )
-        self.update_total_progress_signal.emit(
-            self.total_progress // self.number_of_jobs
-        )
+        self.cellWidget(params.index, self.column_ids["Progress"]).setValue(new_progress)
+        self.update_total_progress_signal.emit(self.total_progress // self.number_of_jobs)
 
     def update_status_job_widget(self, new_progress):
         try:
             self.job_status_widget.update_progress(new_progress=new_progress)
-        except:
+        except Exception:
             pass
 
     def delete_source_file_if_overwritten_enabled(self, job_index):
@@ -1057,13 +1002,11 @@ class JobQueueTable(TableWidget):
             file_name_old_crc_absolute_path = os.path.join(
                 output_file_name_folder_path_absolute, output_video_name
             )
-            rename_file(
-                file_name_old_crc_absolute_path, file_name_with_crc_absolute_path
-            )
+            rename_file(file_name_old_crc_absolute_path, file_name_with_crc_absolute_path)
             self.data[job_index].output_video_name = file_name_with_crc
-            self.data[
-                job_index
-            ].output_video_absolute_path = file_name_with_crc_absolute_path
+            self.data[job_index].output_video_absolute_path = (
+                file_name_with_crc_absolute_path
+            )
         elif self.data[job_index].is_crc_removing_required:
             output_video_name = Path(
                 get_file_name_with_mkv_extension(self.data[job_index].video_name)
@@ -1078,13 +1021,11 @@ class JobQueueTable(TableWidget):
             file_name_without_crc_absolute_path = os.path.join(
                 output_file_name_folder_path_absolute, file_name_without_crc
             )
-            rename_file(
-                file_name_old_absolute_path, file_name_without_crc_absolute_path
-            )
+            rename_file(file_name_old_absolute_path, file_name_without_crc_absolute_path)
             self.data[job_index].output_video_name = file_name_without_crc
-            self.data[
-                job_index
-            ].output_video_absolute_path = file_name_without_crc_absolute_path
+            self.data[job_index].output_video_absolute_path = (
+                file_name_without_crc_absolute_path
+            )
         else:
             output_video_name = Path(
                 get_file_name_with_mkv_extension(self.data[job_index].video_name)
@@ -1119,9 +1060,7 @@ class JobQueueTable(TableWidget):
     def set_job_status_ok(self, row_index):
         self.job_status_widget.stop_loading()
         self.cellWidget(row_index, self.column_ids["Status"]).deleteLater()
-        self.setCellWidget(
-            row_index, self.column_ids["Status"], OkCell(tool_tip="Completado")
-        )
+        self.setCellWidget(row_index, self.column_ids["Status"], OkCell(tool_tip="Completado"))
 
     def set_job_status_bad(self, row_index):
         self.job_status_widget.stop_loading()
@@ -1153,5 +1092,5 @@ class JobQueueTable(TableWidget):
     def delete_video_output_with_zero_size(self, file_path):
         try:
             os.remove(file_path)
-        except:
+        except Exception:
             pass

@@ -7,10 +7,10 @@ from PySide6.QtCore import QObject, QThread, Signal
 
 from packages.Startup import GlobalFiles
 from packages.Tabs.GlobalSetting import GlobalSetting, write_to_log_file
+from packages.Tabs.MuxSetting.Widgets.CRCData import CRCData
 from packages.Tabs.MuxSetting.Widgets.CalculateCRCProcessWorker import (
     CalculateCRCProcessWorker,
 )
-from packages.Tabs.MuxSetting.Widgets.CRCData import CRCData
 from packages.Tabs.MuxSetting.Widgets.GetJsonForMkvmergeJob import GetJsonForMkvmergeJob
 from packages.Tabs.MuxSetting.Widgets.GetJsonForMkvpropeditJob import (
     GetJsonForMkvpropeditJob,
@@ -80,7 +80,7 @@ class StartMuxingWorker(QObject):
 
     def __init__(self, data):
         super().__init__()
-        self.data = data  # type:list[SingleJobData]
+        self.data = data  # type: ignore # type:list[SingleJobData]
         self.current_job = -1
         self.finished_read_log_and_muxing = 0
         self.waiting_for_mkvpropedit_confirm = False
@@ -263,9 +263,7 @@ class StartMuxingWorker(QObject):
         self.read_log_mkvmerge_worker.all_finished.connect(
             self.read_log_mkvmerge_worker.deleteLater
         )
-        self.read_log_mkvmerge_worker.finished_job_signal.connect(
-            self.finished_read_log
-        )
+        self.read_log_mkvmerge_worker.finished_job_signal.connect(self.finished_read_log)
         self.read_log_mkvmerge_thread.finished.connect(
             self.read_log_mkvmerge_thread.deleteLater
         )
@@ -275,9 +273,7 @@ class StartMuxingWorker(QObject):
 
     # noinspection PyAttributeOutsideInit
     def setup_read_mkvpropedit_log_thread(self):
-        self.read_log_mkvpropedit_worker = ReadFromMkvpropeditLogWorker(
-            self.current_job
-        )
+        self.read_log_mkvpropedit_worker = ReadFromMkvpropeditLogWorker(self.current_job)
         self.read_log_mkvpropedit_thread = QThread()
         self.read_log_mkvpropedit_worker.moveToThread(self.read_log_mkvpropedit_thread)
         self.read_log_mkvpropedit_thread.started.connect(
@@ -359,7 +355,7 @@ class StartMuxingWorker(QObject):
             log_file.write(
                 "\n["
                 + t
-                + "] Iniciar Mezcla: ********* "
+                + "] Inicio de multiplexado: ********* "
                 + str(self.data[self.current_job].video_name)
                 + " *********\n\n"
             )
@@ -370,7 +366,7 @@ class StartMuxingWorker(QObject):
             log_file.write(
                 "\n["
                 + t
-                + "] Finalizar Mezcla: ********* "
+                + "] Fin de multiplexado: ********* "
                 + self.data[self.current_job].video_name
                 + " *********\n"
             )

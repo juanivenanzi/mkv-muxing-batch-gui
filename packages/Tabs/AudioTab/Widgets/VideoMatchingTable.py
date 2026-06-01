@@ -1,5 +1,5 @@
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QTableWidgetItem
+from PySide6.QtWidgets import QHeaderView, QTableWidgetItem, QAbstractItemView
 
 from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -9,9 +9,7 @@ from packages.Widgets.TableNoSelection import TableWidgetNoSelection
 
 class VideoMatchingTable(TableFixedHeaderWidget):
     def __init__(self):
-        super().__init__(
-            primarytable=TableWidgetNoSelection(), headername="Nombre del video"
-        )
+        super().__init__(primarytable=TableWidgetNoSelection(), headername="Nombre del video")
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -23,9 +21,7 @@ class VideoMatchingTable(TableFixedHeaderWidget):
 
     def clear_table(self):
         self.table.setRowCount(0)
-        self.table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
-        )
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
     def show_files(self):
         video_file_list = GlobalSetting.VIDEO_FILES_LIST

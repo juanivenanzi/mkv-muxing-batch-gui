@@ -3,4 +3,4 @@ class MuxingParams:
         self.index = 0
         self.progress = 0
         self.error = False
-        self.message = "Mezcla completada exitosamente"
+        self.message = "Multiplexado completado exitosamente"

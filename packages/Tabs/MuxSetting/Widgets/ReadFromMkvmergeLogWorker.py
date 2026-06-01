@@ -1,7 +1,7 @@
 import time
 import traceback
 
-from PySide6.QtCore import QObject, QThread, Signal
+from PySide6.QtCore import Signal, QObject, QThread
 
 from packages.Startup import GlobalFiles
 from packages.Tabs.GlobalSetting import write_to_log_file
@@ -48,31 +48,19 @@ class ReadFromMkvmergeLogWorker(QObject):
                             if line.find("Progress:") != -1:
                                 new_progress = get_int_from_string(line)
                                 muxing_params.progress = new_progress
-                                self.send_muxing_progress_data_signal.emit(
-                                    muxing_params
-                                )
-                            elif (
-                                line.find("Error in the Matroska file structure") != -1
-                            ):
+                                self.send_muxing_progress_data_signal.emit(muxing_params)
+                            elif line.find("Error in the Matroska file structure") != -1:
                                 muxing_params.error = True
-                                muxing_params.message = (
-                                    "Error en la estructura del archivo Matroska"
-                                )
-                                self.send_muxing_progress_data_signal.emit(
-                                    muxing_params
-                                )
+                                muxing_params.message = line
+                                self.send_muxing_progress_data_signal.emit(muxing_params)
                             elif line.find("Multiplexing took") != -1:
                                 muxing_params.progress = 100
-                                self.send_muxing_progress_data_signal.emit(
-                                    muxing_params
-                                )
+                                self.send_muxing_progress_data_signal.emit(muxing_params)
                                 break
                             elif line.find("Error: ") != -1:
                                 muxing_params.error = True
                                 muxing_params.message = line
-                                self.send_muxing_progress_data_signal.emit(
-                                    muxing_params
-                                )
+                                self.send_muxing_progress_data_signal.emit(muxing_params)
                                 break
                     self.finished_job_signal.emit(muxing_params)
                     self.wait = True

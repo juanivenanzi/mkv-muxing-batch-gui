@@ -1,24 +1,22 @@
 # import faulthandler
 from PySide6.QtWidgets import (
-    QGridLayout,
-    QGroupBox,
-    QLabel,
-    QStyleFactory,
-    QVBoxLayout,
     QWidget,
+    QGroupBox,
+    QVBoxLayout,
+    QStyleFactory,
+    QGridLayout,
+    QLabel,
 )
 
-from packages.Startup.MainApplication import get_dark_palette, get_light_palette
 from packages.Startup.Options import Options
+from packages.Startup.MainApplication import get_dark_palette, get_light_palette
 from packages.Startup.PreDefined import (
+    AllVideosExtensions,
+    AllSubtitlesExtensions,
     AllAudiosExtensions,
     AllChapterExtensions,
-    AllSubtitlesExtensions,
-    AllVideosExtensions,
 )
-from packages.Tabs.SettingTab.Widgets.DefaultDirectoryLayout import (
-    DefaultDirectoryLayout,
-)
+from packages.Tabs.SettingTab.Widgets.DefaultDirectoryLayout import DefaultDirectoryLayout
 from packages.Tabs.SettingTab.Widgets.DefaultExtensionsLayout import (
     DefaultExtensionsLayout,
 )
@@ -63,7 +61,7 @@ class PresetTabWidget(QWidget):
             default_directory=self.options.Default_Chapter_Directory,
         )
         self.default_attachment_directory_layout = DefaultDirectoryLayout(
-            label_name="Directorio de archivos adjuntos: ",
+            label_name="Directorio de adjuntos: ",
             default_directory=self.options.Default_Attachment_Directory,
         )
         self.default_destination_directory_layout = DefaultDirectoryLayout(
@@ -76,7 +74,7 @@ class PresetTabWidget(QWidget):
             default_extensions_list=self.options.Default_Video_Extensions,
         )
         self.default_subtitle_extensions_layout = DefaultExtensionsLayout(
-            label_name="Extensiones de subtítulos: ",
+            label_name="Extensiones de subtítulo: ",
             extensions_list=AllSubtitlesExtensions,
             default_extensions_list=self.options.Default_Subtitle_Extensions,
         )
@@ -86,13 +84,13 @@ class PresetTabWidget(QWidget):
             default_extensions_list=self.options.Default_Audio_Extensions,
         )
         self.default_chapter_extensions_layout = DefaultExtensionsLayout(
-            label_name="Extensiones de capítulos: ",
+            label_name="Extensiones de capítulo: ",
             extensions_list=AllChapterExtensions,
             default_extensions_list=self.options.Default_Chapter_Extensions,
         )
 
         self.default_subtitle_language_layout = DefaultLanguageLayout(
-            label_name="Idioma de subtítulos: ",
+            label_name="Idioma de subtítulo: ",
             languages_list=self.options.Default_Favorite_Subtitle_Languages,
             default_language=self.options.Default_Subtitle_Language,
         )
@@ -148,9 +146,7 @@ class PresetTabWidget(QWidget):
 
     def setup_default_directories_layout(self):
         self.default_directories_layout.addLayout(self.default_video_directory_layout)
-        self.default_directories_layout.addLayout(
-            self.default_subtitle_directory_layout
-        )
+        self.default_directories_layout.addLayout(self.default_subtitle_directory_layout)
         self.default_directories_layout.addLayout(self.default_audio_directory_layout)
         self.default_directories_layout.addLayout(self.default_chapter_directory_layout)
         self.default_directories_layout.addLayout(
@@ -228,10 +224,18 @@ class PresetTabWidget(QWidget):
             self.default_destination_directory_layout.lineEdit.text()
         )
 
-        self.options.Default_Video_Extensions = self.default_video_extensions_layout.extensions_checkable_comboBox.currentData()
-        self.options.Default_Subtitle_Extensions = self.default_subtitle_extensions_layout.extensions_checkable_comboBox.currentData()
-        self.options.Default_Audio_Extensions = self.default_audio_extensions_layout.extensions_checkable_comboBox.currentData()
-        self.options.Default_Chapter_Extensions = self.default_chapter_extensions_layout.extensions_checkable_comboBox.currentData()
+        self.options.Default_Video_Extensions = (
+            self.default_video_extensions_layout.extensions_checkable_comboBox.currentData()
+        )
+        self.options.Default_Subtitle_Extensions = (
+            self.default_subtitle_extensions_layout.extensions_checkable_comboBox.currentData()
+        )
+        self.options.Default_Audio_Extensions = (
+            self.default_audio_extensions_layout.extensions_checkable_comboBox.currentData()
+        )
+        self.options.Default_Chapter_Extensions = (
+            self.default_chapter_extensions_layout.extensions_checkable_comboBox.currentData()
+        )
 
         self.options.Default_Subtitle_Language = (
             self.default_subtitle_language_layout.languages_comboBox.currentText()

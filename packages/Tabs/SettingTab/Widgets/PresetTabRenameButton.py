@@ -12,7 +12,7 @@ class PresetTabRenameButton(QPushButton):
     def __init__(self):
         super().__init__()
         self.setIcon(GlobalIcons.RenameIcon)
-        self.hint_when_enabled = "Renombrar perfil"
+        self.hint_when_enabled = "Renombrar preajuste"
         self.current_preset_name = ""
         self.setToolTip(self.hint_when_enabled)
         self.clicked.connect(self.clicked_button)
@@ -23,7 +23,7 @@ class PresetTabRenameButton(QPushButton):
             old_name=self.current_preset_name, parent=self
         )
         rename_preset_to_dialog.execute()
-        if rename_preset_to_dialog.result == "Yes":  # ← No traducir, valor interno
+        if rename_preset_to_dialog.result == "Yes":
             self.rename_tab_signal.emit(rename_preset_to_dialog.new_name)
 
     def paintEvent(self, e):

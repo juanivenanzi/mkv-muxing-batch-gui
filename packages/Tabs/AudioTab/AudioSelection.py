@@ -1,32 +1,31 @@
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import (
-    QGroupBox,
-)
+from PySide6.QtCore import Signal, Qt
+from PySide6.QtWidgets import QGroupBox, QLabel, QHBoxLayout, QGridLayout, QWidget
+from PySide6 import QtGui
+import os
 
 from packages.Startup.Options import Options
 from packages.Startup.SetupThems import get_dark_palette, get_light_palette
 from packages.Tabs.AudioTab.Widgets.AudioClearButton import AudioClearButton
-from packages.Tabs.AudioTab.Widgets.AudioDelayDoubleSpinBox import (
-    AudioDelayDoubleSpinBox,
-)
+from packages.Tabs.AudioTab.Widgets.AudioDelayDoubleSpinBox import AudioDelayDoubleSpinBox
 from packages.Tabs.AudioTab.Widgets.AudioExtensionsCheckableComboBox import (
     AudioExtensionsCheckableComboBox,
 )
 from packages.Tabs.AudioTab.Widgets.AudioLanguageComboBox import AudioLanguageComboBox
 from packages.Tabs.AudioTab.Widgets.AudioMuxOrderWidget import AudioMuxOrderWidget
-from packages.Tabs.AudioTab.Widgets.AudioSetDefaultCheckBox import (
-    AudioSetDefaultCheckBox,
-)
+from packages.Tabs.AudioTab.Widgets.AudioSetDefaultCheckBox import AudioSetDefaultCheckBox
 from packages.Tabs.AudioTab.Widgets.AudioSetForcedCheckBox import AudioSetForcedCheckBox
 from packages.Tabs.AudioTab.Widgets.AudioSourceButton import AudioSourceButton
 from packages.Tabs.AudioTab.Widgets.AudioSourceLineEdit import AudioSourceLineEdit
 from packages.Tabs.AudioTab.Widgets.AudioTrackNameLineEdit import AudioTrackNameLineEdit
 from packages.Tabs.AudioTab.Widgets.MatchAudioLayout import MatchAudioLayout
-from packages.Tabs.GlobalSetting import *
-from packages.Widgets.InvalidPathDialog import *
 from packages.Widgets.RefreshFilesButton import RefreshFilesButton
+from packages.Tabs.GlobalSetting import (
+    GlobalSetting,
+    get_files_names_absolute_list,
+    sort_names_like_windows,
+)
+from packages.Widgets.InvalidPathDialog import InvalidPathDialog
 from packages.Widgets.WarningDialog import WarningDialog
-from packages.Widgets.YesNoDialog import *
 
 
 # noinspection PyAttributeOutsideInit
@@ -45,7 +44,7 @@ class AudioSelectionSetting(QGroupBox):
         self.connect_signals()
 
     def create_widgets(self):
-        self.audio_source_label = QLabel("Carpeta de origen de audio:")
+        self.audio_source_label = QLabel("Carpeta de audio:")
         self.audio_language_label = QLabel("Idioma:")
         self.audio_extension_label = QLabel("Extensión de audio:")
         self.audio_delay_label = QLabel("Retraso:")
@@ -60,9 +59,7 @@ class AudioSelectionSetting(QGroupBox):
         self.audio_set_forced_checkBox = AudioSetForcedCheckBox(self.tab_index)
         self.audio_set_default_checkBox = AudioSetDefaultCheckBox(self.tab_index)
         self.audio_mux_order_widget = AudioMuxOrderWidget(self.tab_index)
-        self.audio_match_layout = MatchAudioLayout(
-            parent=self, tab_index=self.tab_index
-        )
+        self.audio_match_layout = MatchAudioLayout(parent=self, tab_index=self.tab_index)
         self.audio_options_layout = QHBoxLayout()
         self.audio_set_default_forced_layout = QHBoxLayout()
         # self.MainLayout = QVBoxLayout()
@@ -71,7 +68,7 @@ class AudioSelectionSetting(QGroupBox):
         self.setStyleSheet(
             "QGroupBox#main_groupBox {subcontrol-origin: margin;left: 3px;padding: 3px 0px 3px 0px;}"
         )
-        self.audio_match_groupBox = QGroupBox("Coincidencia de audio")
+        self.audio_match_groupBox = QGroupBox("Emparejamiento de audio")
         self.audio_match_groupBox.setLayout(self.audio_match_layout)
 
     def setup_widgets(self):
@@ -112,7 +109,7 @@ class AudioSelectionSetting(QGroupBox):
 
     def create_properties(self):
         self.folder_path = ""
-        self.drag_and_dropped_text = "[Arrastrar y soltar archivos]"
+        self.drag_and_dropped_text = "[Arrastra y suelta archivos aquí]"
         self.files_names_list = []
         self.files_names_absolute_list = []
         self.files_names_absolute_list_with_dropped_files = []
@@ -308,9 +305,7 @@ class AudioSelectionSetting(QGroupBox):
             self.folder_path = ""
             self.files_names_list = []
             self.files_names_absolute_list = []
-            self.current_audio_extensions = (
-                Options.CurrentPreset.Default_Audio_Extensions
-            )
+            self.current_audio_extensions = Options.CurrentPreset.Default_Audio_Extensions
             self.audio_extensions_comboBox.setData(self.current_audio_extensions)
             self.audio_track_name_lineEdit.setText("")
             self.audio_set_forced_checkBox.setChecked(False)
@@ -365,7 +360,7 @@ class AudioSelectionSetting(QGroupBox):
     def check_if_video_modify_old_tracks_activated(self):
         if GlobalSetting.VIDEO_OLD_TRACKS_AUDIOS_REORDER_ACTIVATED:
             self.audio_mux_order_widget.setToolTip(
-                "<nobr><b>[Semi deshabilitado]</b> Solo está disponible la opción [Al principio]<br>Porque has usado la opción <b>Modificar pistas antiguas</b> en la pestaña de Video"
+                "<nobr><b>[Semideshabilitado]</b> Solo la opción [Al principio] está disponible<br>Porque has usado la opción <b>Modificar pistas antiguas</b> en la pestaña de Video"
             )
 
     def update_audio_set_default_forced_state(self):
@@ -462,13 +457,12 @@ class AudioSelectionSetting(QGroupBox):
         self.audio_source_lineEdit.stop_check_path = False
         if duplicate_flag:
             info_message = (
-                "Uno o más archivos tienen el mismo nombre que los archivos antiguos y serán "
-                "omitidos:"
+                "Uno o más archivos tienen el mismo nombre que los archivos antiguos y serán omitidos:"
             )
             for file_name in duplicate_files_list:
                 info_message += "\n" + file_name
             warning_dialog = WarningDialog(
-                window_title="Nombres de archivos duplicados",
+                window_title="Nombres de archivo duplicados",
                 info_message=info_message,
                 parent=self.window(),
             )
@@ -477,9 +471,7 @@ class AudioSelectionSetting(QGroupBox):
 
     def disable_audio_refresh_button_cause_drag_and_drop(self):
         self.audio_refresh_files_button.setEnabled(False)
-        self.audio_refresh_files_button.setToolTip(
-            "Deshabilitado debido al modo Arrastrar/Soltar"
-        )
+        self.audio_refresh_files_button.setToolTip("Deshabilitado debido al modo arrastrar y soltar")
 
     def update_is_drag_and_drop(self, new_state):
         self.is_drag_and_drop = new_state

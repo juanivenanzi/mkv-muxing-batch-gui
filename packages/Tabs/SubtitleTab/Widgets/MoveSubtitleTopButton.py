@@ -29,7 +29,7 @@ class MoveSubtitleTopButton(QPushButton):
             self.selected_row_after_swap.emit(0)
 
     def setup_tool_tip_hint(self):
-        self.setToolTip("Mover subtítulo al inicio (Ctrl+PageUp)")
+        self.setToolTip("Move Sub To Top (Ctrl+PageUp)")
         self.setToolTipDuration(3000)
 
     def setEnabled(self, new_state: bool):

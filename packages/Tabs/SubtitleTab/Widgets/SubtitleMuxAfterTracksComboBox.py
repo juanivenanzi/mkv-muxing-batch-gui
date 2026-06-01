@@ -1,12 +1,23 @@
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import QComboBox
 
 from packages.Tabs.GlobalSetting import GlobalSetting
 
 
 def append_int(num):
-    # En español usamos "º" para todos los números (ordinal masculino)
-    return "º"
+    if num > 9:
+        secondToLastDigit = str(num)[-2]
+        if secondToLastDigit == "1":
+            return "th"
+    lastDigit = num % 10
+    if lastDigit == 1:
+        return "er"
+    elif lastDigit == 2:
+        return "do"
+    elif lastDigit == 3:
+        return "er"
+    else:
+        return "o"
 
 
 def num_to_ith(num):

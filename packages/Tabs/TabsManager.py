@@ -1,6 +1,6 @@
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QColor
-from PySide6.QtWidgets import QHBoxLayout, QTabWidget, QWidget
+from PySide6.QtWidgets import QTabWidget, QHBoxLayout, QWidget
 
 from packages.Startup import ColorThems
 from packages.Startup.Options import Options
@@ -59,7 +59,7 @@ class TabsManager(QTabWidget):
         self.button_layout.addWidget(self.setting_button)
         self.buttons_widget.setLayout(self.button_layout)
         self.button_layout.setContentsMargins(0, 0, 0, 0)
-        self.setCornerWidget(self.buttons_widget, Qt.TopRightCorner)
+        self.setCornerWidget(self.buttons_widget, Qt.Corner.TopRightCorner)
         self.connect_signals()
         self.setup_tabs_theme()
 
@@ -68,8 +68,8 @@ class TabsManager(QTabWidget):
         self.addTab(self.subtitle_tab, "Subtítulos")
         self.addTab(self.audio_tab, "Audios")
         self.addTab(self.chapter_tab, "Capítulos")
-        self.addTab(self.attachment_tab, "Archivos adjuntos")
-        self.addTab(self.mux_setting_tab, "Configuración de mezcla")
+        self.addTab(self.attachment_tab, "Adjuntos")
+        self.addTab(self.mux_setting_tab, "Configuración de mux")
 
     def set_tab_color(self, tab_index, color_string):
         self.tabBar().setTabTextColor(tab_index, QColor(*color_string))
@@ -78,9 +78,7 @@ class TabsManager(QTabWidget):
         self.attachment_tab.activation_signal.connect(
             self.change_attachment_activated_state
         )
-        self.subtitle_tab.activation_signal.connect(
-            self.change_subtitle_activated_state
-        )
+        self.subtitle_tab.activation_signal.connect(self.change_subtitle_activated_state)
         self.audio_tab.activation_signal.connect(self.change_audio_activated_state)
         self.chapter_tab.activation_signal.connect(self.change_chapter_activated_state)
         self.mux_setting_tab.start_muxing_signal.connect(self.start_muxing)
@@ -103,15 +101,11 @@ class TabsManager(QTabWidget):
         activate_color, disabled_color = (
             get_activate_and_disabled_color_according_to_current_theme()
         )
+        self.set_tab_color(tab_index=self.tabs_ids["Video"], color_string=activate_color)
         self.set_tab_color(
-            tab_index=self.tabs_ids["Video"], color_string=activate_color
+            tab_index=self.tabs_ids["Subtitle"], color_string=disabled_color
         )
-        self.set_tab_color(
-            tab_index=self.tabs_ids["Subtitle"], color_string=activate_color
-        )
-        self.set_tab_color(
-            tab_index=self.tabs_ids["Audio"], color_string=disabled_color
-        )
+        self.set_tab_color(tab_index=self.tabs_ids["Audio"], color_string=disabled_color)
         self.set_tab_color(
             tab_index=self.tabs_ids["Attachment"], color_string=disabled_color
         )
@@ -202,7 +196,7 @@ class TabsManager(QTabWidget):
             else:
                 self.set_tab_color(tab_index=tab_id, color_string=disabled_color)
 
-    def current_tab_changed(self, index):
+    def current_tab_changed(self, index: int):
         if index == self.tabs_ids["Video"]:
             self.video_tab.tab_clicked_signal.emit()
         elif index == self.tabs_ids["Subtitle"]:

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QCheckBox, QHBoxLayout, QWidget
+from PySide6.QtWidgets import QCheckBox, QWidget, QHBoxLayout
 
 from packages.Tabs.GlobalSetting import GlobalSetting
 from packages.Tabs.SubtitleTab.Widgets.SubtitleMuxAfterTracksComboBox import (
@@ -11,17 +11,17 @@ class SubtitleMuxOrderWidget(QWidget):
         super().__init__()
         self.tab_index = tab_index
         self.hint_when_enabled = (
-            "<nobr>Define dónde se ubicará la <b>nueva</b> pista de subtítulo entre las pistas de subtítulo antiguas<br>"
-            "El comportamiento predeterminado es agregar nuevos subtítulos después de la última pista<br>"
-            "Marca esto solo si realmente sabes lo que haces <br><b>*</b>["
-            "Respetando otros subtítulos con la misma opción] "
+            "<nobr>Define dónde se ubicará la <b>nueva</b> pista de subtítulo entre las pistas de subtítulos antiguas<br>"
+            "El comportamiento predeterminado es añadir los nuevos subtítulos después de la última pista<br>"
+            "Solo actívalo si realmente sabes lo que haces <br><b>*</b>["
+            "Respeta otros subtítulos con la misma opción] "
         )
         self.setMaximumWidth(300)
         self.setToolTip(self.hint_when_enabled)
         self.mini_layout = QHBoxLayout()
         self.tracks_combobox = SubtitleMuxAfterTracksComboBox()
         self.check_box = QCheckBox()
-        self.check_box.setText("Mezclar después:")
+        self.check_box.setText("Multiplexar después de:")
         self.setup_contents_margin()
         self.setup_mini_layout()
         self.setLayout(self.mini_layout)

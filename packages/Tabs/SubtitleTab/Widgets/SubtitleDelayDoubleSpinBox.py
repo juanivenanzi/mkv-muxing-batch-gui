@@ -15,7 +15,7 @@ class SubtitleDelayDoubleSpinBox(QDoubleSpinBox):
         self.setMaximum(9999.0)
         self.setSingleStep(0.5)
         self.setMaximumWidth(screen_size.width() // 16)
-        self.setToolTip("Retraso de subtítulos en segundo(s)")
+        self.setToolTip("Retraso de subtítulo en segundo(s)")
         self.editingFinished.connect(self.change_global_subtitle_delay)
 
     def change_global_subtitle_delay(self):

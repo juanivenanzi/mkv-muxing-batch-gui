@@ -7,7 +7,7 @@ class DiscardOldChaptersCheckBox(QCheckBox):
     def __init__(self):
         super().__init__()
         self.hint_when_enabled = ""
-        self.setText("Descartar capítulos antiguos ")
+        self.setText("Descartar capítulos antiguos")
         self.toggled.connect(self.change_global_discard_old_chapters)
 
     # noinspection PyMethodMayBeStatic

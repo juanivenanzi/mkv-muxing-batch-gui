@@ -1,10 +1,10 @@
-from PySide6.QtCore import QEvent, QSize, Qt, Signal
+from PySide6.QtCore import Signal, Qt, QSize, QEvent
 from PySide6.QtGui import QFontMetrics
 from PySide6.QtWidgets import QComboBox
 
 from packages.Startup import GlobalIcons
-from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.Options import Options
+from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.SetupThems import get_dark_palette, get_light_palette
 
 
@@ -14,9 +14,9 @@ class PresetTabComboBox(QComboBox):
 
     def __init__(self, items, activated_preset_id):
         super().__init__()
-        self.hint_when_enabled = "Grupos de perfiles"
-        self.name = "Perfil"
-        self.hint_when_enabled = "Nombre del perfil"
+        self.hint_when_enabled = "Grupos de preajustes"
+        self.name = "Preajuste"
+        self.hint_when_enabled = "Nombre del preajuste"
         self.closeOnLineEditClick = False
         self.activated_preset_id = activated_preset_id
         self.setup_items(items=items)
@@ -43,7 +43,7 @@ class PresetTabComboBox(QComboBox):
                 self.addItem(GlobalIcons.SelectedItemIcon, items[item_index])
             else:
                 self.addItem(GlobalIcons.UnSelectedItemIcon, items[item_index])
-        self.addItem(GlobalIcons.PlusIcon, "Nuevo perfil")
+        self.addItem(GlobalIcons.PlusIcon, "Nuevo preajuste")
 
     def check_selected(self, new_selected):
         new_text = self.itemText(new_selected)
@@ -52,7 +52,7 @@ class PresetTabComboBox(QComboBox):
             self.removeItem(self.count() - 1)
             self.addItem(self.name + " #" + str(self.count() + 1))
             new_text = self.name + " #" + str(self.count() + 1)
-            self.addItem(GlobalIcons.PlusIcon, "Nuevo perfil")
+            self.addItem(GlobalIcons.PlusIcon, "Nuevo preajuste")
             self.setCurrentIndex(self.count() - 2)
         self.current_tab_changed_signal.emit(new_selected)
 
@@ -106,12 +106,12 @@ class PresetTabComboBox(QComboBox):
             self.activated_preset_id -= 1
 
     def hide_new_tab_option(self):
-        if self.itemText(self.count() - 1).find("Nuevo perfil") != -1:
+        if self.itemText(self.count() - 1).find("Nuevo") != -1:
             self.removeItem(self.count() - 1)
 
     def show_new_tab_option(self):
-        if self.itemText(self.count() - 1).find("Nuevo perfil") == -1:
-            self.addItem(GlobalIcons.PlusIcon, "Nuevo perfil")
+        if self.itemText(self.count() - 1).find("Nuevo") == -1:
+            self.addItem(GlobalIcons.PlusIcon, "Nuevo preajuste")
 
     def update_theme_mode_state(self):
         if Options.Dark_Mode:

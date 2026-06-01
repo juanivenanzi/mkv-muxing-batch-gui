@@ -1,8 +1,15 @@
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import (
     QGroupBox,
     QVBoxLayout,
+    QLabel,
+    QHBoxLayout,
+    QGridLayout,
+    QWidget,
 )
+
+from PySide6 import QtGui
+import os
 
 from packages.Startup.Options import Options
 from packages.Tabs.ChapterTab.Widgets.ChapterClearButton import ChapterClearButton
@@ -15,11 +22,14 @@ from packages.Tabs.ChapterTab.Widgets.DiscardOldChaptersCheckBox import (
     DiscardOldChaptersCheckBox,
 )
 from packages.Tabs.ChapterTab.Widgets.MatchChapterLayout import MatchChapterLayout
-from packages.Tabs.GlobalSetting import *
-from packages.Widgets.InvalidPathDialog import *
 from packages.Widgets.RefreshFilesButton import RefreshFilesButton
+from packages.Tabs.GlobalSetting import (
+    GlobalSetting,
+    get_files_names_absolute_list,
+    sort_names_like_windows,
+)
+from packages.Widgets.InvalidPathDialog import InvalidPathDialog
 from packages.Widgets.WarningDialog import WarningDialog
-from packages.Widgets.YesNoDialog import *
 
 
 # noinspection PyAttributeOutsideInit
@@ -48,7 +58,7 @@ class ChapterSelectionSetting(GlobalSetting):
         self.MainLayout = QVBoxLayout()
         self.main_layout = QGridLayout()
         self.chapter_main_groupBox = QGroupBox()
-        self.chapter_match_groupBox = QGroupBox("Coincidencia de capítulos")
+        self.chapter_match_groupBox = QGroupBox("Emparejamiento de capítulos")
         self.chapter_match_groupBox.setLayout(self.chapter_match_layout)
 
     def setup_widgets(self):
@@ -59,18 +69,12 @@ class ChapterSelectionSetting(GlobalSetting):
     def connect_signals(self):
         self.chapter_main_groupBox.toggled.connect(self.activate_tab)
         self.chapter_source_button.clicked_signal.connect(self.update_folder_path)
-        self.chapter_source_lineEdit.edit_finished_signal.connect(
-            self.update_folder_path
-        )
-        self.chapter_refresh_files_button.clicked_signal.connect(
-            self.update_folder_path
-        )
+        self.chapter_source_lineEdit.edit_finished_signal.connect(self.update_folder_path)
+        self.chapter_refresh_files_button.clicked_signal.connect(self.update_folder_path)
         self.chapter_source_lineEdit.set_is_drag_and_drop_signal.connect(
             self.update_is_drag_and_drop
         )
-        self.chapter_extensions_comboBox.close_list.connect(
-            self.check_extension_changes
-        )
+        self.chapter_extensions_comboBox.close_list.connect(self.check_extension_changes)
         self.chapter_match_layout.sync_chapter_files_with_global_files_after_swap_delete_signal.connect(
             self.sync_chapter_files_with_global_files
         )
@@ -82,13 +86,11 @@ class ChapterSelectionSetting(GlobalSetting):
 
     def create_properties(self):
         self.folder_path = ""
-        self.drag_and_dropped_text = "[Arrastrar y soltar archivos]"
+        self.drag_and_dropped_text = "[Archivos arrastrados y soltados]"
         self.files_names_list = []
         self.files_names_absolute_list = []
         self.files_names_absolute_list_with_dropped_files = []
-        self.current_chapter_extensions = (
-            Options.CurrentPreset.Default_Chapter_Extensions
-        )
+        self.current_chapter_extensions = Options.CurrentPreset.Default_Chapter_Extensions
         self.is_drag_and_drop = False
 
     def setup_layouts(self):
@@ -226,9 +228,7 @@ class ChapterSelectionSetting(GlobalSetting):
         # self.change_global_last_path_directory()
         self.change_global_chapter_list()
         self.chapter_source_button.set_is_there_old_file(len(self.files_names_list) > 0)
-        self.chapter_source_lineEdit.set_is_there_old_file(
-            len(self.files_names_list) > 0
-        )
+        self.chapter_source_lineEdit.set_is_there_old_file(len(self.files_names_list) > 0)
         self.chapter_extensions_comboBox.set_is_there_old_file(
             len(self.files_names_list) > 0
         )
@@ -400,13 +400,12 @@ class ChapterSelectionSetting(GlobalSetting):
         self.chapter_source_lineEdit.stop_check_path = False
         if duplicate_flag:
             info_message = (
-                "Uno o más archivos tienen el mismo nombre que los archivos antiguos y serán "
-                "omitidos:"
+                "Uno o más archivos tienen el mismo nombre que los archivos antiguos y serán omitidos:"
             )
             for file_name in duplicate_files_list:
                 info_message += "\n" + file_name
             warning_dialog = WarningDialog(
-                window_title="Nombres de archivos duplicados",
+                window_title="Nombres de archivo duplicados",
                 info_message=info_message,
                 parent=self.window(),
             )
@@ -415,9 +414,7 @@ class ChapterSelectionSetting(GlobalSetting):
 
     def disable_chapter_refresh_button_cause_drag_and_drop(self):
         self.chapter_refresh_files_button.setEnabled(False)
-        self.chapter_refresh_files_button.setToolTip(
-            "Deshabilitado debido al modo Arrastrar/Soltar"
-        )
+        self.chapter_refresh_files_button.setToolTip("Deshabilitado debido al modo arrastrar y soltar")
 
     def update_is_drag_and_drop(self, new_state):
         self.is_drag_and_drop = new_state

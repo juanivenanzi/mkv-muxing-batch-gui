@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QFileDialog, QPushButton
+from PySide6.QtWidgets import QPushButton, QFileDialog
 
 from packages.Startup import GlobalIcons
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -28,7 +28,7 @@ class SubtitleSourceButton(QPushButton):
         if self.is_there_old_files:
             reload_dialog = ReloadSubtitleFilesDialog(parent=self)
             reload_dialog.execute()
-            if reload_dialog.result == "Yes":  # ← No traducir, valor interno
+            if reload_dialog.result == "Yes":
                 temp_folder_path = QFileDialog.getExistingDirectory(
                     self,
                     caption="Elegir carpeta de subtítulos",

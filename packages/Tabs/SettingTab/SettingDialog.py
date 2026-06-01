@@ -2,14 +2,12 @@
 from PySide6 import QtGui
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QCheckBox, QGridLayout, QHBoxLayout, QLabel, QPushButton
-
+from PySide6.QtWidgets import QHBoxLayout, QGridLayout, QLabel, QPushButton, QCheckBox
+from packages.Startup.Options import Options, save_options, get_names_list_of_presets
 from packages.Startup.GlobalFiles import InfoIconPath
 from packages.Startup.GlobalIcons import SettingIcon
 from packages.Startup.InitializeScreenResolution import screen_size
-from packages.Startup.Options import Options, get_names_list_of_presets, save_options
 from packages.Tabs.SettingTab.Widgets.AboutButton import AboutButton
-from packages.Tabs.SettingTab.Widgets.DonateButton import DonateButton
 from packages.Tabs.SettingTab.Widgets.PresetTabComboBox import PresetTabComboBox
 from packages.Tabs.SettingTab.Widgets.PresetTabDeleteButton import PresetTabDeleteButton
 from packages.Tabs.SettingTab.Widgets.PresetTabRenameButton import PresetTabRenameButton
@@ -19,6 +17,7 @@ from packages.Tabs.SettingTab.Widgets.PresetTabSetDeafultButton import (
 from packages.Tabs.SettingTab.Widgets.PresetTabWidget import PresetTabWidget
 from packages.Widgets.MyDialog import MyDialog
 from packages.Widgets.SingleDefaultPresetsData import SingleDefaultPresetsData
+
 
 # faulthandler.enable()
 
@@ -36,15 +35,12 @@ class SettingDialog(MyDialog):
         self.setting_info_text_icon_label = QLabel()
         self.setting_info_text_icon_pixmap = QPixmap(InfoIconPath)
         self.setting_info_text_icon_label.setPixmap(self.setting_info_text_icon_pixmap)
-        self.setting_info_text_label = QLabel(
-            "Los cambios tendrán efecto en el próximo inicio"
-        )
+        self.setting_info_text_label = QLabel("Los cambios tendrán efecto en el próximo inicio")
         self.setting_about_button = AboutButton()
-        self.setting_donate_button = DonateButton()
 
         self.preset_tabs = []
         self.preset_counter = 0
-        self.preset_tab_label = QLabel("Perfiles: ")
+        self.preset_tab_label = QLabel("Preajustes: ")
         self.preset_tab_comboBox = PresetTabComboBox(
             items=get_names_list_of_presets(),
             activated_preset_id=Options.FavoritePresetId,
@@ -52,9 +48,7 @@ class SettingDialog(MyDialog):
         self.preset_tab_delete_button = PresetTabDeleteButton()
         self.preset_tab_rename_button = PresetTabRenameButton()
         self.preset_tab_set_default_button = PresetTabSetDefaultButton()
-        self.preset_tab_ask_on_start_check_box = QCheckBox(
-            "Preguntar por perfil al inicio"
-        )
+        self.preset_tab_ask_on_start_check_box = QCheckBox("Preguntar por preajuste al iniciar")
         self.preset_tab_setting_layout = QHBoxLayout()
         self.current_tab_index = 0
         self.current_preset_tab = None
@@ -76,9 +70,6 @@ class SettingDialog(MyDialog):
         self.setting_info_layout = QHBoxLayout()
         self.setting_info_layout.addWidget(self.setting_info_text_icon_label, stretch=0)
         self.setting_info_layout.addWidget(self.setting_info_text_label, stretch=1)
-        self.setting_info_layout.addWidget(
-            self.setting_donate_button, stretch=0, alignment=Qt.AlignmentFlag.AlignRight
-        )
         self.setting_info_layout.addWidget(
             self.setting_about_button, stretch=0, alignment=Qt.AlignmentFlag.AlignRight
         )
@@ -121,9 +112,7 @@ class SettingDialog(MyDialog):
         self.preset_tab_comboBox.current_tab_changed_signal.connect(
             self.change_current_preset_tab
         )
-        self.preset_tab_comboBox.create_new_tab_signal.connect(
-            self.create_new_preset_tab
-        )
+        self.preset_tab_comboBox.create_new_tab_signal.connect(self.create_new_preset_tab)
         self.preset_tab_delete_button.remove_tab_signal.connect(self.delete_current_tab)
         self.preset_tab_rename_button.rename_tab_signal.connect(
             self.update_current_preset_name
@@ -133,12 +122,12 @@ class SettingDialog(MyDialog):
         )
 
     def click_yes(self):
-        self.result = "Yes"  # ← No traducir
+        self.result = "Yes"
         self.save_new_settings()
         self.close()
 
     def click_no(self):
-        self.result = "No"  # ← No traducir
+        self.result = "No"
         self.close()
 
     def save_new_settings(self):

@@ -29,7 +29,7 @@ class MoveAudioDownButton(QPushButton):
             self.selected_row_after_swap.emit(current_index + 1)
 
     def setup_tool_tip_hint(self):
-        self.setToolTip("Mover subtítulo hacia abajo (Ctrl+Flecha abajo)")
+        self.setToolTip("Mover elemento hacia abajo (Ctrl+Flecha abajo)")
         self.setToolTipDuration(3000)
 
     def setEnabled(self, new_state: bool):

@@ -29,7 +29,7 @@ class MoveChapterTopButton(QPushButton):
             self.selected_row_after_swap.emit(0)
 
     def setup_tool_tip_hint(self):
-        self.setToolTip("Mover capítulo al inicio (Ctrl+PageUp)")
+        self.setToolTip("Mover capítulo al principio (Ctrl+RePág)")
         self.setToolTipDuration(3000)
 
     def setEnabled(self, new_state: bool):

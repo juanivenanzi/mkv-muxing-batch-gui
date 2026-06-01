@@ -26,7 +26,7 @@ class DefaultDirectoryLayout(QHBoxLayout):
         self.all_labels_list.append("Directorio de videos: ")
         self.all_labels_list.append("Directorio de subtítulos: ")
         self.all_labels_list.append("Directorio de audios: ")
-        self.all_labels_list.append("Directorio de archivos adjuntos: ")
+        self.all_labels_list.append("Directorio de adjuntos: ")
         self.all_labels_list.append("Directorio de capítulos: ")
         self.all_labels_list.append("Directorio de destino: ")
 

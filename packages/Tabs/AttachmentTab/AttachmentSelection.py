@@ -1,5 +1,5 @@
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QGroupBox, QVBoxLayout
+from PySide6.QtCore import Signal, Qt
+from PySide6.QtWidgets import QVBoxLayout, QGroupBox, QLabel, QHBoxLayout, QGridLayout
 
 from packages.Startup.Options import Options
 from packages.Tabs.AttachmentTab.Widgets.AllowDuplicateAttachmentsCheckBox import (
@@ -14,10 +14,10 @@ from packages.Tabs.AttachmentTab.Widgets.AttachmentSourceButton import (
 from packages.Tabs.AttachmentTab.Widgets.AttachmentSourceLineEdit import (
     AttachmentSourceLineEdit,
 )
+from packages.Tabs.AttachmentTab.Widgets.AttachmentTable import AttachmentTable
 from packages.Tabs.AttachmentTab.Widgets.AttachmentsTotalSizeValueLabel import (
     AttachmentsTotalSizeValueLabel,
 )
-from packages.Tabs.AttachmentTab.Widgets.AttachmentTable import AttachmentTable
 from packages.Tabs.AttachmentTab.Widgets.DiscardOldAttachmentsCheckBox import (
     DiscardOldAttachmentsCheckBox,
 )
@@ -25,18 +25,19 @@ from packages.Tabs.AttachmentTab.Widgets.ExpertModeCheckBox import ExpertModeChe
 from packages.Tabs.AttachmentTab.Widgets.MatchAttachmentWidget import (
     MatchAttachmentWidget,
 )
-from packages.Tabs.GlobalSetting import *
-from packages.Tabs.GlobalSetting import (
-    get_file_name_absolute_path,
-    get_files_names_absolute_list,
-    get_readable_filesize,
-    sort_names_like_windows,
-)
-from packages.Widgets.InvalidPathDialog import *
 from packages.Widgets.RefreshFilesButton import RefreshFilesButton
+from packages.Tabs.GlobalSetting import (
+    sort_names_like_windows,
+    get_readable_filesize,
+    get_files_names_absolute_list,
+    get_file_name_absolute_path,
+    GlobalSetting,
+)
+from packages.Widgets.InvalidPathDialog import InvalidPathDialog
 
 # noinspection PyAttributeOutsideInit
 from packages.Widgets.WarningDialog import WarningDialog
+import os
 
 
 def get_files_size_list(files_list, folder_path):
@@ -65,8 +66,8 @@ class AttachmentSelectionSetting(GlobalSetting):
 
     def __init__(self):
         super().__init__()
-        self.attachment_source_label = QLabel("Attachment Source Folder:")
-        self.attachment_total_size_label = QLabel("Total Attachment Size:")
+        self.attachment_source_label = QLabel("Carpeta de origen de adjuntos:")
+        self.attachment_total_size_label = QLabel("Tamaño total de adjuntos:")
         self.attachment_total_size_value_label = AttachmentsTotalSizeValueLabel()
         self.attachment_source_lineEdit = AttachmentSourceLineEdit()
         self.attachment_clear_button = AttachmentClearButton()
@@ -82,7 +83,7 @@ class AttachmentSelectionSetting(GlobalSetting):
         self.attachment_main_groupBox = QGroupBox(self)
         self.attachment_main_layout = QGridLayout()
         self.folder_path = ""
-        self.drag_and_dropped_text = "[Arrastrar y soltar archivos]"
+        self.drag_and_dropped_text = "[Archivos arrastrados y soltados]"
         self.is_drag_and_drop = False
         self.files_names_list = []
         self.files_checked_list = []
@@ -212,9 +213,7 @@ class AttachmentSelectionSetting(GlobalSetting):
         self.change_global_attachment_list()
         self.attachment_source_lineEdit.set_current_folder_path(self.folder_path)
         self.attachment_source_lineEdit.set_is_drag_and_drop(self.is_drag_and_drop)
-        self.attachment_clear_button.set_is_there_old_file(
-            len(self.files_names_list) > 0
-        )
+        self.attachment_clear_button.set_is_there_old_file(len(self.files_names_list) > 0)
 
     def setup_attachments_options_layout(self):
         self.attachments_options_layout.addWidget(self.expert_mode_checkBox)
@@ -232,9 +231,7 @@ class AttachmentSelectionSetting(GlobalSetting):
         self.attachment_main_layout.addWidget(
             self.attachment_refresh_files_button, 0, 82, 1, 1
         )
-        self.attachment_main_layout.addWidget(
-            self.attachment_source_button, 0, 83, 1, 1
-        )
+        self.attachment_main_layout.addWidget(self.attachment_source_button, 0, 83, 1, 1)
         self.attachment_main_layout.addWidget(self.attachment_total_size_label, 1, 0)
         self.attachment_main_layout.addWidget(
             self.attachment_total_size_value_label, 1, 1
@@ -280,9 +277,7 @@ class AttachmentSelectionSetting(GlobalSetting):
 
     def change_global_attachment_list(self):
         GlobalSetting.ATTACHMENT_FILES_LIST = self.files_names_list
-        GlobalSetting.ATTACHMENT_FILES_ABSOLUTE_PATH_LIST = (
-            self.files_names_absolute_list
-        )
+        GlobalSetting.ATTACHMENT_FILES_ABSOLUTE_PATH_LIST = self.files_names_absolute_list
         GlobalSetting.ATTACHMENT_FILES_CHECKING_LIST = []
         for i in range(len(self.files_names_list)):
             if self.files_checked_list[i]:
@@ -461,9 +456,7 @@ class AttachmentSelectionSetting(GlobalSetting):
         self.folder_path = ""
         self.files_names_absolute_list.extend(not_duplicate_files_absolute_path_list)
         self.files_size_list.extend(
-            get_files_size_with_absolute_path_list(
-                not_duplicate_files_absolute_path_list
-            )
+            get_files_size_with_absolute_path_list(not_duplicate_files_absolute_path_list)
         )
         self.files_checked_list.extend(
             [True] * len(not_duplicate_files_absolute_path_list)
@@ -473,13 +466,12 @@ class AttachmentSelectionSetting(GlobalSetting):
         self.attachment_source_lineEdit.stop_check_path = False
         if duplicate_flag:
             info_message = (
-                "Uno o más archivos tienen el mismo nombre que los archivos antiguos y "
-                "serán omitidos:"
+                "Uno o más archivos tienen el mismo nombre que archivos antiguos y serán omitidos:"
             )
             for file_name in duplicate_files_list:
                 info_message += "\n" + file_name
             warning_dialog = WarningDialog(
-                window_title="Nombres de archivos duplicados",
+                window_title="Nombres de archivo duplicados",
                 info_message=info_message,
                 parent=self.window(),
             )
@@ -491,9 +483,7 @@ class AttachmentSelectionSetting(GlobalSetting):
         self.attachment_source_lineEdit.setText(self.drag_and_dropped_text)
         self.update_is_drag_and_drop(True)
         self.attachment_refresh_files_button.setEnabled(False)
-        self.attachment_refresh_files_button.setToolTip(
-            "Deshabilitado debido al modo Arrastrar y soltar"
-        )
+        self.attachment_refresh_files_button.setToolTip("Deshabilitado debido al modo arrastrar y soltar")
 
     def update_is_drag_and_drop(self, new_state):
         self.is_drag_and_drop = new_state

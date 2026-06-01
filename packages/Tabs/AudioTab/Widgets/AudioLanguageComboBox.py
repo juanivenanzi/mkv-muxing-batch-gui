@@ -1,8 +1,8 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QComboBox
 
-from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.Options import Options
+from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Tabs.GlobalSetting import GlobalSetting
 
 
@@ -17,8 +17,7 @@ class AudioLanguageComboBox(QComboBox):
         self.setToolTip(
             "Idioma de audio: "
             + Options.CurrentPreset.Default_Audio_Language
-            + "\nPuedes añadir/quitar "
-            "idiomas en opciones"
+            + "\nPuedes agregar/eliminar idiomas en opciones"
         )
         self.setMaxVisibleItems(8)
         self.setStyleSheet("QComboBox { combobox-popup: 0; }")
@@ -39,7 +38,7 @@ class AudioLanguageComboBox(QComboBox):
         self.setToolTip(
             "Idioma de audio: "
             + self.currentText()
-            + "\nPuedes añadir/quitar idiomas en opciones"
+            + "\nPuedes agregar/eliminar idiomas en opciones"
         )
         GlobalSetting.AUDIO_LANGUAGE[self.tab_index] = self.currentText()
 

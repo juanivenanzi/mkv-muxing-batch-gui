@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QFileDialog, QPushButton
+from PySide6.QtWidgets import QPushButton, QFileDialog
 
 from packages.Startup import GlobalIcons
 from packages.Tabs.AudioTab.Widgets.ReloadAudioFilesDialog import ReloadAudioFilesDialog
@@ -35,9 +35,7 @@ class AudioSourceButton(QPushButton):
                 new_folder_path = temp_folder_path
         else:
             temp_folder_path = QFileDialog.getExistingDirectory(
-                self,
-                caption="Elegir carpeta de audio",
-                dir=GlobalSetting.LAST_DIRECTORY_PATH,
+                self, caption="Elegir carpeta de audio", dir=GlobalSetting.LAST_DIRECTORY_PATH
             )
             new_folder_path = temp_folder_path
 

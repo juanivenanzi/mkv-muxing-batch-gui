@@ -2,8 +2,8 @@ class ModifyOldTracksTableColumnsID:
     columns_name = [
         "ID",
         "Copiar pista",
-        "Establecer predeterminado",
-        "Establecer forzado",
+        "Establecer como predeterminado",
+        "Marcar como forzado",
         "Nombre de pista",
         "Idioma de pista",
     ]

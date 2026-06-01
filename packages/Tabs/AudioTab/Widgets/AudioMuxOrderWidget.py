@@ -1,9 +1,9 @@
-from PySide6.QtWidgets import QCheckBox, QHBoxLayout, QWidget
+from PySide6.QtWidgets import QCheckBox, QWidget, QHBoxLayout
 
+from packages.Tabs.GlobalSetting import GlobalSetting
 from packages.Tabs.AudioTab.Widgets.AudioMuxAfterTracksComboBox import (
     AudioMuxAfterTracksComboBox,
 )
-from packages.Tabs.GlobalSetting import GlobalSetting
 
 
 class AudioMuxOrderWidget(QWidget):
@@ -12,16 +12,16 @@ class AudioMuxOrderWidget(QWidget):
         self.tab_index = tab_index
         self.hint_when_enabled = (
             "<nobr>Define dónde se ubicará la <b>nueva</b> pista de audio entre las pistas de audio antiguas<br>"
-            "El comportamiento predeterminado es agregar nuevos audios después de la última pista<br>"
-            "Solo actívalo si realmente sabes lo que haces <br><b>*</b>["
-            "Respetando otros audios con la misma opción] "
+            "El comportamiento predeterminado es añadir los nuevos audios después de la última pista<br>"
+            "Solo actívalo si realmente sabes lo que haces<br><b>*</b>["
+            "Respeta otros audios con la misma opción] "
         )
         self.setMaximumWidth(300)
         self.setToolTip(self.hint_when_enabled)
         self.mini_layout = QHBoxLayout()
         self.tracks_combobox = AudioMuxAfterTracksComboBox()
         self.check_box = QCheckBox()
-        self.check_box.setText("Mux After:")
+        self.check_box.setText("Multiplexar después de:")
         self.setup_contents_margin()
         self.setup_mini_layout()
         self.setLayout(self.mini_layout)
@@ -69,8 +69,7 @@ class AudioMuxOrderWidget(QWidget):
             if not GlobalSetting.VIDEO_OLD_TRACKS_AUDIOS_REORDER_ACTIVATED:
                 if (
                     self.tracks_combobox.count()
-                    != len(GlobalSetting.VIDEO_OLD_TRACKS_AUDIOS_BULK_SETTING.keys())
-                    + 1
+                    != len(GlobalSetting.VIDEO_OLD_TRACKS_AUDIOS_BULK_SETTING.keys()) + 1
                 ):
                     self.tracks_combobox.update_tracks(
                         number_of_tracks=len(

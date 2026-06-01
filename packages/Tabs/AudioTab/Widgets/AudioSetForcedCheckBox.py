@@ -9,7 +9,7 @@ class AudioSetForcedCheckBox(QCheckBox):
         super().__init__()
         self.tab_index = tab_index
         self.hint_when_enabled = ""
-        self.setText("Set Forced")
+        self.setText("Establecer como forzado")
         self.stateChanged.connect(self.change_global_audio_set_forced)
 
     def change_global_audio_set_forced(self):
@@ -27,16 +27,14 @@ class AudioSetForcedCheckBox(QCheckBox):
 
         if self.isEnabled():
             self.setToolTip(
-                "<nobr>establecer el nuevo audio como la pista de audio forzada al "
-                "reproducir"
+                "<nobr>establecer el nuevo audio como pista de audio forzada al reproducir"
             )
             self.setToolTipDuration(12000)
         else:
             self.setToolTip(
-                "<nobr>establecer el nuevo audio como la pista de audio forzada al "
-                "reproducir<br><b>Deshabilitado</b> porque "
+                "<nobr>establecer el nuevo audio como pista de audio forzada al reproducir<br><b>Deshabilitado</b> porque "
                 "la opción "
-                "<b>hacer este audio predeterminado y forzado</b> está activada en la pestaña de configuración de mezcla "
+                "<b>hacer este audio predeterminado y forzado</b> está activada en la pestaña de configuración de mux"
             )
             self.setToolTipDuration(12000)
 

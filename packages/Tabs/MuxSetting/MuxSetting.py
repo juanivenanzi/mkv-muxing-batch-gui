@@ -5,15 +5,19 @@ from os import makedirs
 from pathlib import Path
 from shutil import copy2
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QPaintEvent, QResizeEvent
 from PySide6.QtWidgets import (
-    QCheckBox,
-    QFileDialog,
+    QVBoxLayout,
+    QGridLayout,
+    QLabel,
+    QPushButton,
+    QHBoxLayout,
     QGroupBox,
+    QFileDialog,
+    QCheckBox,
     QLineEdit,
     QSizePolicy,
-    QVBoxLayout,
     QWidget,
 )
 
@@ -21,8 +25,8 @@ from packages.Startup.Options import Options
 from packages.Tabs.GlobalSetting import (
     GlobalSetting,
     get_file_name_absolute_path,
-    get_readable_filesize,
     write_to_log_file,
+    get_readable_filesize,
 )
 from packages.Tabs.MuxSetting.Widgets.AudioTracksCheckableComboBox import (
     AudioTracksCheckableComboBox,
@@ -54,8 +58,10 @@ from packages.Tabs.MuxSetting.Widgets.SubtitleTracksCheckableComboBox import (
 )
 from packages.Widgets.ErrorMuxingDialog import ErrorMuxingDialog
 from packages.Widgets.FileNotFoundDialog import FileNotFoundDialog
-from packages.Widgets.InvalidPathDialog import *
+from packages.Widgets.InvalidPathDialog import InvalidPathDialog
 from packages.Widgets.NoSettingToApplyDialog import NoSettingToApplyDialog
+from packages.Startup import GlobalFiles, GlobalIcons
+
 
 # noinspection PyAttributeOutsideInit
 
@@ -67,7 +73,7 @@ def get_time():
 
 def change_global_LogFilePath():
     t = get_time()
-    log_file_name = "muxing_log_file_" + t + ".txt"
+    log_file_name = "archivo_log_muxing_" + t + ".txt"
     GlobalFiles.MuxingLogFilePath = get_file_name_absolute_path(
         file_name=log_file_name, folder_path=GlobalFiles.MergeLogsFolderPath
     )
@@ -158,7 +164,7 @@ def get_approximate_size_of_output_of_job(job):
     file_size = 0
     try:
         file_size += os.path.getsize(job.video_name_absolute)
-    except:
+    except Exception:
         return file_size
     for subtitle_to_add in job.subtitle_name_absolute:
         file_size += os.path.getsize(subtitle_to_add)
@@ -168,7 +174,7 @@ def get_approximate_size_of_output_of_job(job):
         file_size += os.path.getsize(attachment)
     if job.chapter_name_absolute != "":
         file_size += os.path.getsize(job.chapter_name_absolute)
-    file_size += 10 * 1024 * 1024  # size add approximate for each file  [Added 10 MB]
+    file_size += 10 * 1024 * 1024  # tamaño aproximado agregado por archivo [10 MB añadidos]
     return file_size
 
 
@@ -246,9 +252,7 @@ class MuxSettingTab(QWidget):
             self.remove_old_crc_checksum_state_changed
         )
 
-        self.keep_log_file_checkBox.stateChanged.connect(
-            self.keep_log_file_state_changed
-        )
+        self.keep_log_file_checkBox.stateChanged.connect(self.keep_log_file_state_changed)
         self.job_queue_layout.update_task_bar_progress_signal.connect(
             self.update_task_bar_progress
         )
@@ -295,9 +299,7 @@ class MuxSettingTab(QWidget):
         self.destination_path_button = QPushButton()
         self.only_keep_those_audios_checkBox = OnlyKeepThoseAudiosCheckBox()
         self.only_keep_those_subtitles_checkBox = OnlyKeepThoseSubtitlesCheckBox()
-        self.only_keep_those_audios_multi_choose_comboBox = (
-            AudioTracksCheckableComboBox()
-        )
+        self.only_keep_those_audios_multi_choose_comboBox = AudioTracksCheckableComboBox()
         self.only_keep_those_subtitles_multi_choose_comboBox = (
             SubtitleTracksCheckableComboBox()
         )
@@ -344,9 +346,7 @@ class MuxSettingTab(QWidget):
         self.mux_tools_layout_first_row.addWidget(self.add_crc_checksum_checkBox)
         self.mux_tools_layout_first_row.addWidget(self.abort_on_errors_checkBox, 1)
         # self.mux_tools_layout_first_row.addLayout(self.h1, 2)
-        self.mux_tools_layout_first_row.addWidget(
-            self.clear_job_queue_button, stretch=0
-        )
+        self.mux_tools_layout_first_row.addWidget(self.clear_job_queue_button, stretch=0)
 
     def setup_mux_tools_layout_second_row(self):
         self.mux_tools_layout_second_row.addWidget(
@@ -370,30 +370,28 @@ class MuxSettingTab(QWidget):
         self.clear_job_queue_button.setDisabled(True)
 
     def setup_add_crc_checksum_checkBox(self):
-        self.add_crc_checksum_checkBox.setText("Agregar suma de verificación CRC")
+        self.add_crc_checksum_checkBox.setText("Añadir suma de comprobación CRC")
         self.add_crc_checksum_checkBox.setToolTip(
-            "Agregar suma de verificación CRC al final del nombre del archivo de salida"
+            "Añadir suma de comprobación CRC al final del nombre del archivo de salida"
         )
 
     def setup_remove_old_crc_checkBox(self):
         self.remove_old_crc_checksum_checkBox.setText("Eliminar CRC antiguo   ")
         self.remove_old_crc_checksum_checkBox.setToolTip(
-            "Eliminar CRC antiguo del final del archivo (no hará nada si no hay)"
+            "Eliminar CRC antiguo del final del nombre del archivo (no hará nada si no hay)"
         )
 
     def setup_keep_log_file_checkBox(self):
-        self.keep_log_file_checkBox.setText("Conservar archivo de registro")
+        self.keep_log_file_checkBox.setText("Guardar registro")
         self.keep_log_file_checkBox.setToolTip(
-            "el archivo de registro se ubicará en la carpeta de origen después de finalizar la mezcla"
+            "El archivo de registro se ubicará en la carpeta de origen después de finalizar el multiplexado"
         )
 
     def setup_discard_old_attachments_checkBox(self):
-        self.discard_old_attachments_checkBox.setText(
-            "Descartar archivos adjuntos antiguos "
-        )
+        self.discard_old_attachments_checkBox.setText("Descartar adjuntos antiguos ")
 
     def setup_abort_on_errors_checkBox(self):
-        self.abort_on_errors_checkBox.setText("Abortar en errores")
+        self.abort_on_errors_checkBox.setText("Parar en caso de error")
         self.abort_on_errors_checkBox.setSizePolicy(
             QSizePolicy.Fixed, QSizePolicy.Preferred
         )
@@ -403,12 +401,12 @@ class MuxSettingTab(QWidget):
 
     def setup_destination_path_lineEdit(self):
         self.destination_path_lineEdit.setPlaceholderText(
-            "Ingrese la ruta de la carpeta de destino [Déjelo vacío para sobrescribir los archivos fuente]"
+            "Ingresa la ruta de la carpeta de destino [Déjalo vacío para sobrescribir los archivos de origen]"
         )
         self.destination_path_lineEdit.setClearButtonEnabled(True)
 
     def setup_destination_path_label(self):
-        self.destination_path_label.setText("Carpeta de destino de videos :")
+        self.destination_path_label.setText("Carpeta de destino de videos:")
 
     def setup_MainLayout(self):
         self.MainLayout.addWidget(self.mux_setting_groupBox)
@@ -418,7 +416,7 @@ class MuxSettingTab(QWidget):
         self.job_queue_groupBox.setTitle("Cola de trabajos")
 
     def setup_mux_setting_groupBox(self):
-        self.mux_setting_groupBox.setTitle("Configuración de mezcla")
+        self.mux_setting_groupBox.setTitle("Configuración de multiplexado")
 
     def paintEvent(self, event: QPaintEvent):
         self.update_widgets_size()
@@ -493,9 +491,7 @@ class MuxSettingTab(QWidget):
         else:
             self.destination_path_lineEdit.setText(str(Path(temp_folder_path)))
             GlobalSetting.LAST_DIRECTORY_PATH = self.destination_path_lineEdit.text()
-            GlobalSetting.DESTINATION_FOLDER_PATH = (
-                self.destination_path_lineEdit.text()
-            )
+            GlobalSetting.DESTINATION_FOLDER_PATH = self.destination_path_lineEdit.text()
 
     def check_destination_path(self):
         GlobalSetting.OVERWRITE_SOURCE_FILES = False
@@ -518,7 +514,7 @@ class MuxSettingTab(QWidget):
                     and not temp_destination_path.startswith("\\\\")
                 ):
                     raise Exception(
-                        f"[WinError 999] Not a valid path : '{temp_destination_path}'"
+                        f"[WinError 999] No es una ruta válida : '{temp_destination_path}'"
                     )
             ## test if i can write into this path:
             makedirs(temp_destination_path, exist_ok=True)
@@ -534,7 +530,7 @@ class MuxSettingTab(QWidget):
                 write_to_log_file(e)
                 invalid_dialog = InvalidPathDialog(
                     window_title="Permiso denegado",
-                    error_message="MKV Muxing Batch GUI carece de permisos de escritura en la carpeta de destino",
+                    error_message="MKV Muxing Batch GUI no tiene permisos de escritura en la carpeta de destino",
                     parent=self,
                 )
                 invalid_dialog.execute()
@@ -546,16 +542,14 @@ class MuxSettingTab(QWidget):
             write_to_log_file(e)
             error_message = ""
             if temp_destination_path == "[Empty Path]":
-                error_message = "Ingrese una ruta de destino válida"
+                error_message = "Ingresa una ruta de destino válida"
             else:
                 error_message = temp_destination_path + "\n¡no es una ruta válida!"
             if str(e).find("WinError 999") == -1 and str(e).find("WinError 998") == -1:
                 error_message = str(e)
             invalid_dialog = InvalidPathDialog(error_message=error_message, parent=self)
             invalid_dialog.execute()
-            self.destination_path_lineEdit.setText(
-                GlobalSetting.DESTINATION_FOLDER_PATH
-            )
+            self.destination_path_lineEdit.setText(GlobalSetting.DESTINATION_FOLDER_PATH)
             return False
         if Path(temp_destination_path) in GlobalSetting.VIDEO_SOURCE_PATHS:
             invalid_dialog = InvalidPathDialog(
@@ -563,9 +557,7 @@ class MuxSettingTab(QWidget):
                 parent=self,
             )
             invalid_dialog.execute()
-            self.destination_path_lineEdit.setText(
-                GlobalSetting.DESTINATION_FOLDER_PATH
-            )
+            self.destination_path_lineEdit.setText(GlobalSetting.DESTINATION_FOLDER_PATH)
             return False
         GlobalSetting.DESTINATION_FOLDER_PATH = temp_destination_path
         return True
@@ -591,9 +583,9 @@ class MuxSettingTab(QWidget):
                         readable_free_space = get_readable_filesize(free_space)
                         if free_space - needed_space <= 1024:
                             low_space_warning_dialog = NoSpaceWarningDialog(
-                                warning_message=f"Necesita aproximadamente [{readable_needed_space}] para mezclar el archivo: "
-                                f"{job.video_name}.\nEspacio libre actual [{readable_free_space}]",
-                                window_title="Espacio en disco bajo",
+                                warning_message=f"Necesitas aproximadamente [{readable_needed_space}] para multiplexar el archivo: "
+                                f"{job.video_name}.\nEspacio disponible actualmente [{readable_free_space}]",
+                                window_title="Espacio en disco insuficiente",
                                 parent=self,
                             )
                             low_space_warning_dialog.execute()
@@ -619,9 +611,9 @@ class MuxSettingTab(QWidget):
                         readable_free_space = get_readable_filesize(free_space)
                         if free_space - needed_space <= 1024:
                             low_space_warning_dialog = NoSpaceWarningDialog(
-                                warning_message=f"Necesita aproximadamente [{readable_needed_space}] para mezclar el archivo: "
-                                f"{job.video_name}.\nEspacio libre actual [{readable_free_space}]",
-                                window_title="Espacio en disco bajo",
+                                warning_message=f"Necesitas aproximadamente [{readable_needed_space}] para multiplexar el archivo: "
+                                f"{job.video_name}.\nEspacio disponible actualmente [{readable_free_space}]",
+                                window_title="Espacio en disco insuficiente",
                                 parent=self,
                             )
                             low_space_warning_dialog.execute()
@@ -648,8 +640,8 @@ class MuxSettingTab(QWidget):
                 readable_free_space = get_readable_filesize(free_space)
                 if free_space - needed_space <= 1024:
                     low_space_warning_dialog = NoSpaceWarningDialog(
-                        warning_message=f"Necesita aproximadamente [{readable_needed_space}] para mezclar sus archivos.\nEspacio libre actual [{readable_free_space}]",
-                        window_title="Espacio en disco bajo",
+                        warning_message=f"Necesitas aproximadamente [{readable_needed_space}] para multiplexar tus archivos.\nEspacio disponible actualmente [{readable_free_space}]",
+                        window_title="Espacio en disco insuficiente",
                         parent=self,
                     )
                     low_space_warning_dialog.execute()
@@ -699,7 +691,10 @@ class MuxSettingTab(QWidget):
                 or GlobalSetting.VIDEO_OLD_TRACKS_AUDIOS_MODIFIED_ACTIVATED
             ):
                 if GlobalSetting.VIDEO_OLD_TRACKS_SUBTITLES_MODIFIED_ACTIVATED:
-                    disable_reason = "Porque ha modificado algunas pistas de subtítulo en la opción <b>Modificar pistas antiguas</b> en la pestaña de Video "
+                    disable_reason = (
+                        "Porque has modificado algunas pistas de subtítulos en la opción <b>Modificar pistas antiguas</b> "
+                        "en la pestaña de Video "
+                    )
                     self.only_keep_those_subtitles_checkBox.setCheckState(
                         Qt.CheckState.Unchecked
                     )
@@ -709,19 +704,22 @@ class MuxSettingTab(QWidget):
                         Qt.CheckState.Unchecked
                     )
                     self.only_keep_those_subtitles_checkBox.setToolTip(
-                        f"<b>[Deshabilitado]</b> {disable_reason}"
+                        f"<b>[Disabled]</b> {disable_reason}"
                     )
                     self.make_this_subtitle_default_checkBox.setToolTip(
-                        f"<b>[Deshabilitado]</b> {disable_reason}"
+                        f"<b>[Disabled]</b> {disable_reason}"
                     )
                     self.make_this_subtitle_default_comboBox.setToolTip(
-                        f"<b>[Deshabilitado]</b> {disable_reason}"
+                        f"<b>[Disabled]</b> {disable_reason}"
                     )
                     self.only_keep_those_subtitles_multi_choose_comboBox.setToolTip(
-                        f"<b>[Deshabilitado]</b> {disable_reason}"
+                        f"<b>[Disabled]</b> {disable_reason}"
                     )
                 if GlobalSetting.VIDEO_OLD_TRACKS_AUDIOS_MODIFIED_ACTIVATED:
-                    disable_reason = "Porque ha modificado algunas pistas de audio en la opción <b>Modificar pistas antiguas</b> en la pestaña de Video "
+                    disable_reason = (
+                        "Porque has modificado algunas pistas de audio en la opción <b>Modificar pistas antiguas</b> "
+                        "en la pestaña de Video "
+                    )
                     self.only_keep_those_audios_checkBox.setCheckState(
                         Qt.CheckState.Unchecked
                     )
@@ -731,16 +729,16 @@ class MuxSettingTab(QWidget):
                     self.only_keep_those_audios_checkBox.setEnabled(False)
                     self.make_this_audio_default_checkBox.setEnabled(False)
                     self.only_keep_those_audios_checkBox.setToolTip(
-                        f"<b>[Deshabilitado]</b> {disable_reason}"
+                        f"<b>[Disabled]</b> {disable_reason}"
                     )
                     self.make_this_audio_default_checkBox.setToolTip(
-                        f"<b>[Deshabilitado]</b> {disable_reason}"
+                        f"<b>[Disabled]</b> {disable_reason}"
                     )
                     self.make_this_audio_default_comboBox.setToolTip(
-                        f"<b>[Deshabilitado]</b> {disable_reason}"
+                        f"<b>[Disabled]</b> {disable_reason}"
                     )
                     self.only_keep_those_audios_multi_choose_comboBox.setToolTip(
-                        f"<b>[Deshabilitado]</b> {disable_reason}"
+                        f"<b>[Disabled]</b> {disable_reason}"
                     )
 
             else:
@@ -922,7 +920,7 @@ class MuxSettingTab(QWidget):
                     write_to_log_file(e)
                     error_dialog = ErrorMuxingDialog(
                         window_title="Permiso denegado",
-                        info_message="No se puede guardar el archivo de registro, MKV Muxing Batch GUI carece de permisos de escritura en la carpeta de destino",
+                        info_message="No se puede guardar el archivo de registro, MKV Muxing Batch GUI no tiene permisos de escritura en la carpeta de destino",
                         parent=self,
                     )
                     error_dialog.execute()

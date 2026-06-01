@@ -1,6 +1,6 @@
 from PySide6.QtCore import Signal
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QTableWidgetItem
+from PySide6.QtWidgets import QHeaderView, QTableWidgetItem, QAbstractItemView
 
 from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -12,7 +12,7 @@ class SubtitleMatchingTable(TableFixedHeaderWidget):
     drop_folder_and_files_signal = Signal(list)
 
     def __init__(self, tab_index):
-        super().__init__(primarytable=TableWidget(), headername="Nombre de subtítulo")
+        super().__init__(primarytable=TableWidget(), headername="Nombre del subtítulo")
         self.tab_index = tab_index
         self.current_files_list = []
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -30,9 +30,7 @@ class SubtitleMatchingTable(TableFixedHeaderWidget):
 
     def clear_table(self):
         self.table.setRowCount(0)
-        self.table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
-        )
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
     def show_files(self):
         files_list = GlobalSetting.SUBTITLE_FILES_LIST[self.tab_index]
@@ -47,9 +45,7 @@ class SubtitleMatchingTable(TableFixedHeaderWidget):
             item = QTableWidgetItem(str(i + 1))
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.table.setVerticalHeaderItem(i, item)
-        self.current_files_list = files_list[
-            :
-        ]  # for copy the rel elements not refrences
+        self.current_files_list = files_list[:]  # for copy the rel elements not refrences
 
     def show_files_after_swapping_deleting(self):
         files_list = GlobalSetting.SUBTITLE_FILES_LIST[self.tab_index]

@@ -1,11 +1,11 @@
-from PySide6 import QtCore, QtGui
+from PySide6 import QtGui, QtCore
 from PySide6.QtWidgets import (
-    QAbstractSpinBox,
-    QGridLayout,
     QHBoxLayout,
+    QSpinBox,
+    QGridLayout,
     QLabel,
     QPushButton,
-    QSpinBox,
+    QAbstractSpinBox,
 )
 
 from packages.Widgets.MyDialog import MyDialog
@@ -55,12 +55,12 @@ class MoveToDialog(MyDialog):
         pass
 
     def click_yes(self):
-        self.result = "Yes"  # ← No traducir
+        self.result = "Yes"
         self.position = self.spinBox.value()
         self.close()
 
     def click_no(self):
-        self.result = "No"  # ← No traducir
+        self.result = "No"
         self.position = -1
         self.close()
 

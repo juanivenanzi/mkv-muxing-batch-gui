@@ -14,10 +14,10 @@ class ExpertModeCheckBox(QCheckBox):
     def __init__(self):
         super().__init__()
         self.hint_when_enabled = (
-            "<nobr>Activando Modo Experto<br>Habilita la capacidad de seleccionar [Archivo o "
-            "Carpeta] Para Cada Video <b>Por Separado</b>"
+            "<nobr>Activar modo experto<br>Permite seleccionar [archivo o "
+            "carpeta] para cada video <b>por separado</b>"
         )
-        self.setText("Expert Mode")
+        self.setText("Modo experto")
         self.toggled.connect(self.change_global_expert_mode_attachments)
         self.setToolTip(self.hint_when_enabled)
         self.skip_state_changed = False

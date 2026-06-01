@@ -29,7 +29,7 @@ class MoveAttachmentBottomButton(QPushButton):
             self.selected_row_after_swap.emit(20000)
 
     def setup_tool_tip_hint(self):
-        self.setToolTip("Mover elemento al final (Ctrl+Av Pág)")
+        self.setToolTip("Mover elemento al final (Ctrl+AvPág)")
         self.setToolTipDuration(3000)
 
     def setEnabled(self, new_state: bool):

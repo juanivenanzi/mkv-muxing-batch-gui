@@ -1,5 +1,4 @@
 from PySide6.QtCore import Qt
-
 from packages.Startup.InitializeScreenResolution import screen_size
 from packages.Startup.PreDefined import AllAudiosTracks
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -9,6 +8,7 @@ from packages.Tabs.MuxSetting.Widgets.TracksCheckableComboBox import (
 
 
 class AudioTracksCheckableComboBox(TracksCheckableComboBox):
+
     def __init__(self):
         super().__init__()
         self.addItems(AllAudiosTracks)
@@ -16,7 +16,7 @@ class AudioTracksCheckableComboBox(TracksCheckableComboBox):
         self.setMaximumWidth(screen_size.width() // 4)
         self.setDisabled(True)
         self.empty_selection_hint_string = (
-            "Descartar todas las pistas de audio del archivo fuente<br>esta opción resultará en "
+            "Descartar todas las pistas de audio del archivo de origen<br>esta opción dará como resultado "
             "un video de salida SIN audios<br>[los nuevos archivos de audio existirán]"
         )
 

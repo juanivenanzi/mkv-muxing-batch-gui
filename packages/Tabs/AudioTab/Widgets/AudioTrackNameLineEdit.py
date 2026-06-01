@@ -9,11 +9,11 @@ class AudioTrackNameLineEdit(QLineEdit):
         super().__init__()
         self.tab_index = tab_index
         self.hint_when_enabled = ""
-        self.setPlaceholderText("Nombre de la pista de audio")
+        self.setPlaceholderText("Nombre de pista de audio")
         self.setMinimumWidth(screen_size.width() // 10)
         self.setMaximumWidth(screen_size.width() // 8)
         self.setClearButtonEnabled(True)
-        self.setToolTip("Nombre de la pista de audio")
+        self.setToolTip("Nombre de pista de audio")
         self.textEdited.connect(self.change_global_audio_track_name)
 
     def change_global_audio_track_name(self):

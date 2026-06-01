@@ -1,11 +1,11 @@
 from PySide6 import QtGui
-from PySide6.QtCore import QSize, Qt
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (
-    QAbstractItemView,
+    QVBoxLayout,
+    QPushButton,
     QHBoxLayout,
     QLabel,
-    QPushButton,
-    QVBoxLayout,
+    QAbstractItemView,
 )
 
 from packages.Startup.GlobalIcons import LeftArrowIcon, RightArrowIcon
@@ -19,9 +19,7 @@ class LanguagePreferenceDialog(MyDialog):
         super().__init__(parent)
         self.old_favorite = old_favorite
         self.current_favorite = self.old_favorite.copy()
-        self.setWindowTitle(
-            window_title
-        )  # El título se pasa desde afuera, se asume traducido allí
+        self.setWindowTitle(window_title)
         self.selected_language_layout = QVBoxLayout()
         self.available_language_layout = QVBoxLayout()
         self.selected_language_list = ListWidget()
@@ -155,7 +153,7 @@ class LanguagePreferenceDialog(MyDialog):
         for i in range(self.selected_language_list.count()):
             self.current_favorite.append(self.selected_language_list.item(i).text())
         if len(self.current_favorite) == 0:
-            self.current_favorite.append("Inglés")  # "English" traducido
+            self.current_favorite.append("Inglés")
         self.close()
 
     def click_no(self):

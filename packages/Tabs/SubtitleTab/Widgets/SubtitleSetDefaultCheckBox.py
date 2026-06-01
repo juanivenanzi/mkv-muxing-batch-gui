@@ -18,6 +18,7 @@ class SubtitleSetDefaultCheckBox(QCheckBox):
         )
         if self.checkState() == Qt.CheckState.Checked:
             for i in GlobalSetting.SUBTITLE_SET_DEFAULT.keys():
+
                 if i != self.tab_index:
                     GlobalSetting.SUBTITLE_SET_DEFAULT[i] = False
 
@@ -27,13 +28,14 @@ class SubtitleSetDefaultCheckBox(QCheckBox):
 
         if self.isEnabled():
             self.setToolTip(
-                "<nobr>establecer el nuevo subtítulo como la pista de subtítulo predeterminada al reproducir"
+                "<nobr>establecer el nuevo subtítulo como pista de subtítulos predeterminada al reproducir"
             )
             self.setToolTipDuration(12000)
         else:
             self.setToolTip(
-                "<nobr>establecer el nuevo subtítulo como la pista de subtítulo predeterminada al reproducir<br><b>Deshabilitado</b> porque "
-                "la opción <b>hacer este subtítulo predeterminado</b> está activada en la pestaña de configuración de mezcla"
+                "<nobr>establecer el nuevo subtítulo como pista de subtítulos predeterminada al reproducir<br><b>Deshabilitado</b> porque "
+                "la opción "
+                "<b>hacer este subtítulo predeterminado</b> está activada en la pestaña de configuración de mux"
             )
             self.setToolTipDuration(12000)
 

@@ -9,11 +9,11 @@ class SubtitleTrackNameLineEdit(QLineEdit):
         super().__init__()
         self.tab_index = tab_index
         self.hint_when_enabled = ""
-        self.setPlaceholderText("Nombre de la pista de subtítulo")
+        self.setPlaceholderText("Nombre de pista de subtítulo")
         self.setMinimumWidth(screen_size.width() // 10)
         self.setMaximumWidth(screen_size.width() // 8)
         self.setClearButtonEnabled(True)
-        self.setToolTip("Nombre de la pista de subtítulo")
+        self.setToolTip("Nombre de pista de subtítulo")
         self.textEdited.connect(self.change_global_subtitle_track_name)
 
     def change_global_subtitle_track_name(self):

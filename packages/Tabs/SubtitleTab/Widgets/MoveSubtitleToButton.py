@@ -26,7 +26,7 @@ class MoveSubtitleToButton(QPushButton):
                 max_index=self.max_index, current_index=current_index, parent=self
             )
             move_subtitle_to_dialog.execute()
-            if move_subtitle_to_dialog.result == "Yes":  # ← No traducir, valor interno
+            if move_subtitle_to_dialog.result == "Yes":
                 new_index = move_subtitle_to_dialog.position - 1
                 self.move_subtitle_to_position_signal.emit([current_index, new_index])
                 self.swap_happened_signal.emit()

@@ -7,7 +7,7 @@ class DiscardOldAttachmentsCheckBox(QCheckBox):
     def __init__(self):
         super().__init__()
         self.hint_when_enabled = ""
-        self.setText("Descartar archivos adjuntos antiguos")
+        self.setText("Descartar adjuntos antiguos")
         self.toggled.connect(self.change_global_discard_old_attachments)
 
     # noinspection PyMethodMayBeStatic
