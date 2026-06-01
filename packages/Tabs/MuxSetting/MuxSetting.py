@@ -5,28 +5,29 @@ from os import makedirs
 from pathlib import Path
 from shutil import copy2
 
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPaintEvent, QResizeEvent
 from PySide6.QtWidgets import (
-    QVBoxLayout,
-    QGridLayout,
-    QLabel,
-    QPushButton,
-    QHBoxLayout,
-    QGroupBox,
-    QFileDialog,
     QCheckBox,
+    QFileDialog,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
     QLineEdit,
+    QPushButton,
     QSizePolicy,
+    QVBoxLayout,
     QWidget,
 )
 
+from packages.Startup import GlobalFiles, GlobalIcons
 from packages.Startup.Options import Options
 from packages.Tabs.GlobalSetting import (
     GlobalSetting,
     get_file_name_absolute_path,
-    write_to_log_file,
     get_readable_filesize,
+    write_to_log_file,
 )
 from packages.Tabs.MuxSetting.Widgets.AudioTracksCheckableComboBox import (
     AudioTracksCheckableComboBox,
@@ -60,8 +61,6 @@ from packages.Widgets.ErrorMuxingDialog import ErrorMuxingDialog
 from packages.Widgets.FileNotFoundDialog import FileNotFoundDialog
 from packages.Widgets.InvalidPathDialog import InvalidPathDialog
 from packages.Widgets.NoSettingToApplyDialog import NoSettingToApplyDialog
-from packages.Startup import GlobalFiles, GlobalIcons
-
 
 # noinspection PyAttributeOutsideInit
 
@@ -194,9 +193,7 @@ class MuxSettingTab(QWidget):
     def connect_signals(self):
         self.tab_clicked_signal.connect(self.tab_clicked)
 
-        self.destination_path_button.clicked.connect(
-            self.open_select_destination_folder_dialog
-        )
+        self.destination_path_button.clicked.connect(self.open_select_destination_folder_dialog)
 
         self.only_keep_those_audios_checkBox.stateChanged.connect(
             self.only_keep_those_audios_multi_choose_comboBox.check_box_state_changed
@@ -242,20 +239,14 @@ class MuxSettingTab(QWidget):
             self.make_this_subtitle_default_comboBox_text_changed
         )
 
-        self.abort_on_errors_checkBox.stateChanged.connect(
-            self.abort_on_errors_state_changed
-        )
-        self.add_crc_checksum_checkBox.stateChanged.connect(
-            self.add_crc_checksum_state_changed
-        )
+        self.abort_on_errors_checkBox.stateChanged.connect(self.abort_on_errors_state_changed)
+        self.add_crc_checksum_checkBox.stateChanged.connect(self.add_crc_checksum_state_changed)
         self.remove_old_crc_checksum_checkBox.stateChanged.connect(
             self.remove_old_crc_checksum_state_changed
         )
 
         self.keep_log_file_checkBox.stateChanged.connect(self.keep_log_file_state_changed)
-        self.job_queue_layout.update_task_bar_progress_signal.connect(
-            self.update_task_bar_progress
-        )
+        self.job_queue_layout.update_task_bar_progress_signal.connect(self.update_task_bar_progress)
         self.job_queue_layout.paused_done_signal.connect(self.paused_done)
         self.job_queue_layout.cancel_done_signal.connect(self.cancel_done)
         self.job_queue_layout.finished_all_jobs_signal.connect(self.finished_all_jobs)
@@ -300,9 +291,7 @@ class MuxSettingTab(QWidget):
         self.only_keep_those_audios_checkBox = OnlyKeepThoseAudiosCheckBox()
         self.only_keep_those_subtitles_checkBox = OnlyKeepThoseSubtitlesCheckBox()
         self.only_keep_those_audios_multi_choose_comboBox = AudioTracksCheckableComboBox()
-        self.only_keep_those_subtitles_multi_choose_comboBox = (
-            SubtitleTracksCheckableComboBox()
-        )
+        self.only_keep_those_subtitles_multi_choose_comboBox = SubtitleTracksCheckableComboBox()
         self.make_this_audio_default_checkBox = MakeThisAudioDefaultCheckBox()
         self.make_this_subtitle_default_checkBox = MakeThisSubtitleDefaultCheckBox()
         self.make_this_audio_default_comboBox = MakeThisTrackDefaultComboBox()
@@ -337,12 +326,8 @@ class MuxSettingTab(QWidget):
         self.mux_tools_layout_first_row.addWidget(
             self.only_keep_those_audios_multi_choose_comboBox, 2
         )
-        self.mux_tools_layout_first_row.addWidget(
-            self.make_this_audio_default_checkBox, 1
-        )
-        self.mux_tools_layout_first_row.addWidget(
-            self.make_this_audio_default_comboBox, 2
-        )
+        self.mux_tools_layout_first_row.addWidget(self.make_this_audio_default_checkBox, 1)
+        self.mux_tools_layout_first_row.addWidget(self.make_this_audio_default_comboBox, 2)
         self.mux_tools_layout_first_row.addWidget(self.add_crc_checksum_checkBox)
         self.mux_tools_layout_first_row.addWidget(self.abort_on_errors_checkBox, 1)
         # self.mux_tools_layout_first_row.addLayout(self.h1, 2)
@@ -352,15 +337,9 @@ class MuxSettingTab(QWidget):
         self.mux_tools_layout_second_row.addWidget(
             self.only_keep_those_subtitles_multi_choose_comboBox, 2
         )
-        self.mux_tools_layout_second_row.addWidget(
-            self.make_this_subtitle_default_checkBox, 1
-        )
-        self.mux_tools_layout_second_row.addWidget(
-            self.make_this_subtitle_default_comboBox, 2
-        )
-        self.mux_tools_layout_second_row.addWidget(
-            self.remove_old_crc_checksum_checkBox, 1
-        )
+        self.mux_tools_layout_second_row.addWidget(self.make_this_subtitle_default_checkBox, 1)
+        self.mux_tools_layout_second_row.addWidget(self.make_this_subtitle_default_comboBox, 2)
+        self.mux_tools_layout_second_row.addWidget(self.remove_old_crc_checksum_checkBox, 1)
         self.mux_tools_layout_second_row.addWidget(self.keep_log_file_checkBox)
         self.mux_tools_layout_second_row.addWidget(self.control_queue_button)
 
@@ -392,9 +371,7 @@ class MuxSettingTab(QWidget):
 
     def setup_abort_on_errors_checkBox(self):
         self.abort_on_errors_checkBox.setText("Parar en caso de error")
-        self.abort_on_errors_checkBox.setSizePolicy(
-            QSizePolicy.Fixed, QSizePolicy.Preferred
-        )
+        self.abort_on_errors_checkBox.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
 
     def setup_destination_path_button(self):
         self.destination_path_button.setIcon(GlobalIcons.SelectFolderIcon)
@@ -452,15 +429,11 @@ class MuxSettingTab(QWidget):
 
         self.remove_old_crc_checksum_checkBox.move(
             self.add_crc_checksum_checkBox.x(),
-            self.add_crc_checksum_checkBox.y()
-            + self.add_crc_checksum_checkBox.height()
-            + 9,
+            self.add_crc_checksum_checkBox.y() + self.add_crc_checksum_checkBox.height() + 9,
         )
         self.keep_log_file_checkBox.move(
             self.abort_on_errors_checkBox.x(),
-            self.abort_on_errors_checkBox.y()
-            + self.abort_on_errors_checkBox.height()
-            + 8,
+            self.abort_on_errors_checkBox.y() + self.abort_on_errors_checkBox.height() + 8,
         )
         self.control_queue_button.move(
             self.clear_job_queue_button.x(),
@@ -474,10 +447,11 @@ class MuxSettingTab(QWidget):
         self.clear_job_queue_button.setFixedWidth(self.control_queue_button.width())
 
     def open_select_destination_folder_dialog(self):
+        start_dir = (
+            str(GlobalSetting.LAST_DIRECTORY_PATH) if GlobalSetting.LAST_DIRECTORY_PATH else ""
+        )
         temp_folder_path = QFileDialog.getExistingDirectory(
-            self,
-            caption="Elegir carpeta de destino",
-            dir=GlobalSetting.LAST_DIRECTORY_PATH,
+            self, "Elegir carpeta de destino", start_dir
         )
         if temp_folder_path == "" or temp_folder_path.isspace():
             return
@@ -534,9 +508,7 @@ class MuxSettingTab(QWidget):
                     parent=self,
                 )
                 invalid_dialog.execute()
-                self.destination_path_lineEdit.setText(
-                    GlobalSetting.DESTINATION_FOLDER_PATH
-                )
+                self.destination_path_lineEdit.setText(GlobalSetting.DESTINATION_FOLDER_PATH)
                 return False
         except Exception as e:
             write_to_log_file(e)
@@ -625,9 +597,7 @@ class MuxSettingTab(QWidget):
                 return True
         else:
             try:
-                free_space = shutil.disk_usage(
-                    path=GlobalSetting.DESTINATION_FOLDER_PATH
-                ).free
+                free_space = shutil.disk_usage(path=GlobalSetting.DESTINATION_FOLDER_PATH).free
                 needed_space = 0
                 for job in self.job_queue_layout.table.data:
                     if not job.done or (
@@ -695,50 +665,42 @@ class MuxSettingTab(QWidget):
                         "Porque has modificado algunas pistas de subtítulos en la opción <b>Modificar pistas antiguas</b> "
                         "en la pestaña de Video "
                     )
-                    self.only_keep_those_subtitles_checkBox.setCheckState(
-                        Qt.CheckState.Unchecked
-                    )
+                    self.only_keep_those_subtitles_checkBox.setCheckState(Qt.CheckState.Unchecked)
                     self.only_keep_those_subtitles_checkBox.setEnabled(False)
                     self.make_this_subtitle_default_checkBox.setEnabled(False)
-                    self.make_this_subtitle_default_checkBox.setCheckState(
-                        Qt.CheckState.Unchecked
-                    )
+                    self.make_this_subtitle_default_checkBox.setCheckState(Qt.CheckState.Unchecked)
                     self.only_keep_those_subtitles_checkBox.setToolTip(
-                        f"<b>[Disabled]</b> {disable_reason}"
+                        f"<b>[Deshabilitado]</b> {disable_reason}"
                     )
                     self.make_this_subtitle_default_checkBox.setToolTip(
-                        f"<b>[Disabled]</b> {disable_reason}"
+                        f"<b>[Deshabilitado]</b> {disable_reason}"
                     )
                     self.make_this_subtitle_default_comboBox.setToolTip(
-                        f"<b>[Disabled]</b> {disable_reason}"
+                        f"<b>[Deshabilitado]</b> {disable_reason}"
                     )
                     self.only_keep_those_subtitles_multi_choose_comboBox.setToolTip(
-                        f"<b>[Disabled]</b> {disable_reason}"
+                        f"<b>[Deshabilitado]</b> {disable_reason}"
                     )
                 if GlobalSetting.VIDEO_OLD_TRACKS_AUDIOS_MODIFIED_ACTIVATED:
                     disable_reason = (
                         "Porque has modificado algunas pistas de audio en la opción <b>Modificar pistas antiguas</b> "
                         "en la pestaña de Video "
                     )
-                    self.only_keep_those_audios_checkBox.setCheckState(
-                        Qt.CheckState.Unchecked
-                    )
-                    self.make_this_audio_default_checkBox.setCheckState(
-                        Qt.CheckState.Unchecked
-                    )
+                    self.only_keep_those_audios_checkBox.setCheckState(Qt.CheckState.Unchecked)
+                    self.make_this_audio_default_checkBox.setCheckState(Qt.CheckState.Unchecked)
                     self.only_keep_those_audios_checkBox.setEnabled(False)
                     self.make_this_audio_default_checkBox.setEnabled(False)
                     self.only_keep_those_audios_checkBox.setToolTip(
-                        f"<b>[Disabled]</b> {disable_reason}"
+                        f"<b>[Deshabilitado]</b> {disable_reason}"
                     )
                     self.make_this_audio_default_checkBox.setToolTip(
-                        f"<b>[Disabled]</b> {disable_reason}"
+                        f"<b>[Deshabilitado]</b> {disable_reason}"
                     )
                     self.make_this_audio_default_comboBox.setToolTip(
-                        f"<b>[Disabled]</b> {disable_reason}"
+                        f"<b>[Deshabilitado]</b> {disable_reason}"
                     )
                     self.only_keep_those_audios_multi_choose_comboBox.setToolTip(
-                        f"<b>[Disabled]</b> {disable_reason}"
+                        f"<b>[Deshabilitado]</b> {disable_reason}"
                     )
 
             else:
@@ -881,18 +843,14 @@ class MuxSettingTab(QWidget):
         GlobalSetting.MUX_SETTING_KEEP_LOG_FILE = bool(state)
 
     def start_multiplexing_button_clicked(self):
-        mkvpropedit_wanted_to_be_used = check_if_mkvpropedit_wanted_to_be_used(
-            window_parent=self
-        )
+        mkvpropedit_wanted_to_be_used = check_if_mkvpropedit_wanted_to_be_used(window_parent=self)
         if mkvpropedit_wanted_to_be_used == "Cancel":
             return
         if not GlobalSetting.USE_MKVPROPEDIT:
             destination_path_valid = self.check_destination_path()
             if not destination_path_valid:
                 return
-        confirm_muxing = check_if_at_least_one_muxing_setting_has_been_selected(
-            window_parent=self
-        )
+        confirm_muxing = check_if_at_least_one_muxing_setting_has_been_selected(window_parent=self)
         if not confirm_muxing:
             return
         is_there_enough_space = self.check_available_space()
@@ -977,9 +935,7 @@ class MuxSettingTab(QWidget):
             open(GlobalFiles.MuxingLogFilePath, "w+").close()
 
     def set_default_directory(self):
-        self.destination_path_lineEdit.setText(
-            Options.CurrentPreset.Default_Destination_Directory
-        )
+        self.destination_path_lineEdit.setText(Options.CurrentPreset.Default_Destination_Directory)
 
     def set_preset_options(self):
         self.set_default_directory()

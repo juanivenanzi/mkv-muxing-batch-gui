@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QPushButton, QFileDialog
+from PySide6.QtWidgets import QFileDialog, QPushButton
 
 from packages.Startup import GlobalIcons
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -17,10 +17,11 @@ class AttachmentSourceButton(QPushButton):
         self.clicked.connect(self.open_select_folder_dialog)
 
     def open_select_folder_dialog(self):
+        start_dir = (
+            str(GlobalSetting.LAST_DIRECTORY_PATH) if GlobalSetting.LAST_DIRECTORY_PATH else ""
+        )
         temp_folder_path = QFileDialog.getExistingDirectory(
-            self,
-            caption="Elegir carpeta de adjuntos",
-            dir=GlobalSetting.LAST_DIRECTORY_PATH,
+            self, "Elegir carpeta de adjuntos", start_dir
         )
         new_folder_path = temp_folder_path
 
@@ -36,10 +37,7 @@ class AttachmentSourceButton(QPushButton):
         if not new_state and not GlobalSetting.JOB_QUEUE_EMPTY:
             if self.hint_when_enabled != "":
                 self.setToolTip(
-                    "<nobr>"
-                    + self.hint_when_enabled
-                    + "<br>"
-                    + GlobalSetting.DISABLE_TOOLTIP
+                    "<nobr>" + self.hint_when_enabled + "<br>" + GlobalSetting.DISABLE_TOOLTIP
                 )
             else:
                 self.setToolTip("<nobr>" + GlobalSetting.DISABLE_TOOLTIP)
@@ -51,10 +49,7 @@ class AttachmentSourceButton(QPushButton):
         if new_state and not GlobalSetting.JOB_QUEUE_EMPTY:
             if self.hint_when_enabled != "":
                 self.setToolTip(
-                    "<nobr>"
-                    + self.hint_when_enabled
-                    + "<br>"
-                    + GlobalSetting.DISABLE_TOOLTIP
+                    "<nobr>" + self.hint_when_enabled + "<br>" + GlobalSetting.DISABLE_TOOLTIP
                 )
             else:
                 self.setToolTip("<nobr>" + GlobalSetting.DISABLE_TOOLTIP)
