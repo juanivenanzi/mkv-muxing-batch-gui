@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QHBoxLayout, QGroupBox, QLabel
+from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel
 
 from packages.Startup import GlobalFiles
 
@@ -14,12 +14,15 @@ class PreventChangeSettingGroupBox(QGroupBox):
         self.prevent_change_setting_icon = QLabel()
         self.prevent_change_setting_text = QLabel()
         self.prevent_change_setting_icon.setPixmap(GlobalFiles.InfoIconPath)
-        self.prevent_change_setting_text.setText("change setting disabled")
+        self.prevent_change_setting_text.setText(
+            "cambios de configuración deshabilitados"
+        )
         self.prevent_change_setting_text.setContentsMargins(0, 0, 0, 1)
         self.prevent_change_setting_layout.setContentsMargins(0, 0, 0, 5)
         self.prevent_change_setting_layout.addWidget(self.prevent_change_setting_icon)
         self.prevent_change_setting_layout.addWidget(self.prevent_change_setting_text)
-        self.setToolTip("You can't change global settings while job queue has unfinished job(s)")
+        self.setToolTip(
+            "No puedes cambiar la configuración global mientras la cola de trabajos tenga trabajo(s) pendiente(s)"
+        )
         self.setToolTipDuration(12000)
-        self.setLayout(
-            self.prevent_change_setting_layout)
+        self.setLayout(self.prevent_change_setting_layout)

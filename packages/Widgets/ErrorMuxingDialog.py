@@ -1,17 +1,17 @@
-import subprocess
-import webbrowser
 import logging
+import subprocess
 import sys
-from PySide6 import QtGui, QtCore
-from PySide6.QtWidgets import QGridLayout, QLabel, \
-     QPushButton, QHBoxLayout
-from packages.Startup import GlobalFiles
-from packages.Startup import GlobalIcons
+import webbrowser
+
+from PySide6 import QtCore, QtGui
+from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QPushButton
+
+from packages.Startup import GlobalFiles, GlobalIcons
 from packages.Widgets.MyDialog import MyDialog
 
 
 def click_show_log_file():
-    if sys.platform not in ['linux', 'linux2']:
+    if sys.platform not in ["linux", "linux2"]:
         webbrowser.open(GlobalFiles.MuxingLogFilePath)
     else:
         try:
@@ -29,8 +29,8 @@ class ErrorMuxingDialog(MyDialog):
         self.message = QLabel()
         self.message.setWordWrap(True)
         self.messageIcon = QLabel()
-        self.yes_button = QPushButton("OK")
-        self.show_log_file_button = QPushButton("Open log file")
+        self.yes_button = QPushButton("Aceptar")
+        self.show_log_file_button = QPushButton("Abrir archivo de registro")
 
         self.buttons_layout = QHBoxLayout()
         self.buttons_layout.addWidget(self.yes_button)
@@ -38,7 +38,9 @@ class ErrorMuxingDialog(MyDialog):
         self.main_layout_spacer_item = QLabel()
         self.main_layout = QGridLayout()
         self.main_layout.addWidget(self.messageIcon, 0, 0, 2, 1)
-        self.main_layout.addWidget(self.main_layout_spacer_item, 0, 1, 1, 1)  # add space
+        self.main_layout.addWidget(
+            self.main_layout_spacer_item, 0, 1, 1, 1
+        )  # add space
         self.main_layout.addWidget(self.message, 0, 2, 2, 3)
         self.main_layout.addLayout(self.buttons_layout, 2, 4, 1, -1)
         self.main_layout.setContentsMargins(20, 20, 20, 20)

@@ -9,7 +9,7 @@ class AboutButton(QPushButton):
         super().__init__()
         self.setIcon(GlobalIcons.AboutIcon)
         self.setText(" About")
-        self.hint_when_enabled = "About Us"
+        self.hint_when_enabled = "Acerca de"
         self.setToolTip(self.hint_when_enabled)
         self.clicked.connect(self.open_about_dialog)
 

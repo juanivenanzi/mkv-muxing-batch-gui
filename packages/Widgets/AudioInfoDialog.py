@@ -1,297 +1,225 @@
-from PySide6 import QtGui
-from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QGridLayout, QLabel, \
-    QPushButton, QHBoxLayout, QDoubleSpinBox, QComboBox, QLineEdit, QCheckBox, \
-    QFormLayout
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QHBoxLayout, QTabWidget, QWidget
 
-from packages.Startup import GlobalFiles
-from packages.Startup import GlobalIcons
+from packages.Startup import ColorThems
 from packages.Startup.Options import Options
-from packages.Widgets.InfoCellDialogTabComboBox import InfoCellDialogTabComboBox
-from packages.Widgets.MyDialog import MyDialog
+from packages.Startup.SetupThems import get_dark_palette, get_light_palette
+from packages.Tabs.AttachmentTab.AttachmentSelection import AttachmentSelectionSetting
+from packages.Tabs.AudioTab.AudioTabManager import AudioTabManager
+from packages.Tabs.ChapterTab.ChapterSelection import ChapterSelectionSetting
+from packages.Tabs.MuxSetting.MuxSetting import MuxSettingTab
+from packages.Tabs.SettingTab.SettingButton import SettingButton
+from packages.Tabs.SubtitleTab.SubtitleTabManager import SubtitleTabManager
+from packages.Tabs.VideoTab.VideoSelection import VideoSelectionSetting
+from packages.Widgets.ThemeButton import ThemeButton
 
 
-class AudioInfoDialog(MyDialog):
-    def __init__(self, audios_name,
-                 audios_delay, audios_language, audios_track_name,
-                 audios_set_default, audios_set_forced
-                 , audios_default_value_delay, audios_default_value_language,
-                 audios_default_value_track_name, audios_default_value_set_default,
-                 audios_default_value_set_forced, audio_set_default_disabled=False,
-                 audio_set_forced_disabled=False, disable_edit=False, parent=None):
-        super().__init__(parent)
-        self.window_title = "Audio Info"
-        self.state = "no"
-        self.audios_count = len(audios_delay)
+def get_activate_and_disabled_color_according_to_current_theme():
+    if Options.Dark_Mode:
+        activate_color = ColorThems.Dark_Text_Color
+        disabled_color = ColorThems.Dark_Text_Color_Disabled
+    else:
+        activate_color = ColorThems.Light_Text_Color
+        disabled_color = ColorThems.Light_Text_Color_Disabled
+    return activate_color, disabled_color
 
-        self.messageIcon = QLabel()
-        self.audio_tab_comboBox = InfoCellDialogTabComboBox(hint="Audios Groups")
-        for i in range(self.audios_count):
-            self.audio_tab_comboBox.addItem("Audio #" + str(i + 1))
-        self.audio_tab_comboBox.setCurrentIndex(0)
-        self.audio_tab_comboBox.currentIndexChanged.connect(self.update_current_audio_index)
-        self.current_audio_index = 0
 
-        self.disable_edit = disable_edit
-        self.current_audio_name = audios_name
-        self.current_audio_language = audios_language
-        self.current_audio_delay = audios_delay
-        self.current_audio_track_name = audios_track_name
-        self.current_audio_set_default = audios_set_default
-        self.current_audio_set_forced = audios_set_forced
+class TabsManager(QTabWidget):
+    task_bar_start_muxing_signal = Signal()
+    update_task_bar_progress_signal = Signal(int)
+    update_task_bar_paused_signal = Signal()
+    update_task_bar_clear_signal = Signal()
+    theme_changed_signal = Signal()
 
-        self.default_audio_language = audios_default_value_language
-        self.default_audio_delay = audios_default_value_delay
-        self.default_audio_track_name = audios_default_value_track_name
-        self.default_audio_set_default = audios_default_value_set_default
-        self.default_audio_set_forced = audios_default_value_set_forced
+    def __init__(self):
+        super().__init__()
+        self.video_tab = VideoSelectionSetting()
+        self.subtitle_tab = SubtitleTabManager()
+        self.audio_tab = AudioTabManager()
+        self.attachment_tab = AttachmentSelectionSetting()
+        self.chapter_tab = ChapterSelectionSetting()
+        self.mux_setting_tab = MuxSettingTab()
+        self.tabs_ids = {
+            "Video": 0,
+            "Subtitle": 1,
+            "Audio": 2,
+            "Chapter": 3,
+            "Attachment": 4,
+            "Mux Setting": 5,
+        }
+        self.tabs_status = [True, True, False, False, False, True]
+        self.add_tabs()
 
-        self.audio_set_default_disabled = audio_set_default_disabled
-        self.audio_set_forced_disabled = audio_set_forced_disabled
+        self.setting_button = SettingButton()
+        self.theme_button = ThemeButton()
+        self.button_layout = QHBoxLayout()
+        self.buttons_widget = QWidget()
+        self.button_layout.addWidget(self.theme_button)
+        self.button_layout.addWidget(self.setting_button)
+        self.buttons_widget.setLayout(self.button_layout)
+        self.button_layout.setContentsMargins(0, 0, 0, 0)
+        self.setCornerWidget(self.buttons_widget, Qt.TopRightCorner)
+        self.connect_signals()
+        self.setup_tabs_theme()
 
-        self.audio_name_label = QLabel("Audio Name:")
-        self.audio_name_value = QLabel(str(self.current_audio_name[self.current_audio_index]))
-        width_to_be_fixed = 0
-        for i in range(len(self.current_audio_name)):
-            width_to_be_fixed = max(width_to_be_fixed, self.audio_name_value.fontMetrics().boundingRect(
-                self.current_audio_name[i]).width())
-        self.audio_name_value.setFixedWidth(width_to_be_fixed + 10)
-        self.audio_delay_label = QLabel("Audio Delay:")
-        self.audio_delay_spin = QDoubleSpinBox()
-        self.setup_audio_delay_spin()
+    def add_tabs(self):
+        self.addTab(self.video_tab, "Videos")
+        self.addTab(self.subtitle_tab, "Subtítulos")
+        self.addTab(self.audio_tab, "Audios")
+        self.addTab(self.chapter_tab, "Capítulos")
+        self.addTab(self.attachment_tab, "Archivos adjuntos")
+        self.addTab(self.mux_setting_tab, "Configuración de mezcla")
 
-        self.audio_language_label = QLabel("Audio Language:")
-        self.audio_language_comboBox = QComboBox()
-        self.setup_audio_language_comboBox()
+    def set_tab_color(self, tab_index, color_string):
+        self.tabBar().setTabTextColor(tab_index, QColor(*color_string))
 
-        self.audio_track_name_label = QLabel("Audio Track Name:")
-        self.audio_track_name_lineEdit = QLineEdit()
-        self.setup_audio_track_name_lineEdit()
+    def connect_signals(self):
+        self.attachment_tab.activation_signal.connect(
+            self.change_attachment_activated_state
+        )
+        self.subtitle_tab.activation_signal.connect(
+            self.change_subtitle_activated_state
+        )
+        self.audio_tab.activation_signal.connect(self.change_audio_activated_state)
+        self.chapter_tab.activation_signal.connect(self.change_chapter_activated_state)
+        self.mux_setting_tab.start_muxing_signal.connect(self.start_muxing)
+        self.mux_setting_tab.update_task_bar_progress_signal.connect(
+            self.update_task_bar_progress_signal.emit
+        )
+        self.mux_setting_tab.update_task_bar_paused_signal.connect(
+            self.update_task_bar_paused_signal.emit
+        )
+        self.mux_setting_tab.update_task_bar_clear_signal.connect(
+            self.update_task_bar_clear_signal.emit
+        )
+        self.currentChanged.connect(self.current_tab_changed)
+        self.theme_button.dark_mode_updated_signal.connect(self.update_theme_mode_state)
 
-        self.audio_set_forced_label = QLabel("Audio Forced State:")
-        self.audio_set_forced_checkBox = QCheckBox()
-        self.setup_audio_set_forced_checkBox()
+    def start_muxing(self):
+        self.task_bar_start_muxing_signal.emit()
 
-        self.audio_set_default_label = QLabel("Audio Default State:")
-        self.audio_set_default_checkBox = QCheckBox()
-        self.setup_audio_set_default_checkBox()
+    def setup_tabs_theme(self):
+        activate_color, disabled_color = (
+            get_activate_and_disabled_color_according_to_current_theme()
+        )
+        self.set_tab_color(
+            tab_index=self.tabs_ids["Video"], color_string=activate_color
+        )
+        self.set_tab_color(
+            tab_index=self.tabs_ids["Subtitle"], color_string=activate_color
+        )
+        self.set_tab_color(
+            tab_index=self.tabs_ids["Audio"], color_string=disabled_color
+        )
+        self.set_tab_color(
+            tab_index=self.tabs_ids["Attachment"], color_string=disabled_color
+        )
+        self.set_tab_color(
+            tab_index=self.tabs_ids["Chapter"], color_string=disabled_color
+        )
+        self.set_tab_color(
+            tab_index=self.tabs_ids["Mux Setting"], color_string=activate_color
+        )
 
-        self.yes_button = QPushButton("OK")
-        self.no_button = QPushButton("Cancel")
-        self.reset_button = QPushButton("Reset To Default")
+    def change_attachment_activated_state(self, new_state):
+        activate_color, disabled_color = (
+            get_activate_and_disabled_color_according_to_current_theme()
+        )
+        if new_state:
+            self.set_tab_color(
+                tab_index=self.tabs_ids["Attachment"], color_string=activate_color
+            )
+        else:
+            self.set_tab_color(
+                tab_index=self.tabs_ids["Attachment"], color_string=disabled_color
+            )
+        self.tabs_status[self.tabs_ids["Attachment"]] = new_state
 
-        self.buttons_layout = QHBoxLayout()
-        self.audio_delay_layout = QHBoxLayout()
-        self.audio_language_layout = QHBoxLayout()
-        self.audio_track_name_layout = QHBoxLayout()
-        self.audio_set_default_layout = QHBoxLayout()
-        self.audio_set_forced_layout = QHBoxLayout()
-        self.buttons_layout.addStretch(stretch=3)
-        self.buttons_layout.addWidget(self.reset_button, stretch=2)
-        self.buttons_layout.addWidget(self.yes_button, stretch=2)
-        self.buttons_layout.addWidget(self.no_button, stretch=2)
-        self.buttons_layout.addStretch(stretch=3)
-        self.audio_setting_layout = QGridLayout()
-        self.audio_editable_setting_layout = QFormLayout()
-        self.audio_editable_setting_layout.addRow(self.audio_name_label, self.audio_name_value)
-        self.audio_editable_setting_layout.addRow(self.audio_track_name_label,
-                                                  self.audio_track_name_lineEdit)
-        self.audio_editable_setting_layout.addRow(self.audio_language_label,
-                                                  self.audio_language_comboBox)
-        self.audio_editable_setting_layout.addRow(self.audio_delay_label, self.audio_delay_spin)
-        self.audio_editable_setting_layout.addRow(self.audio_set_default_label,
-                                                  self.audio_set_default_checkBox)
-        self.audio_editable_setting_layout.addRow(self.audio_set_forced_label,
-                                                  self.audio_set_forced_checkBox)
-        self.audio_setting_layout.addWidget(self.audio_tab_comboBox, 0, 0)
-        self.audio_setting_layout.addLayout(self.audio_editable_setting_layout, 1, 0, 5, 2)
-        self.audio_setting_layout.addWidget(self.messageIcon, 1, 3, 5, -1)
+    def change_subtitle_activated_state(self, new_state):
+        activate_color, disabled_color = (
+            get_activate_and_disabled_color_according_to_current_theme()
+        )
+        if new_state:
+            self.set_tab_color(
+                tab_index=self.tabs_ids["Subtitle"], color_string=activate_color
+            )
+        else:
+            self.set_tab_color(
+                tab_index=self.tabs_ids["Subtitle"], color_string=disabled_color
+            )
+        self.tabs_status[self.tabs_ids["Subtitle"]] = new_state
 
-        self.main_layout = QGridLayout()
-        self.main_layout.addLayout(self.audio_setting_layout, 0, 0, 2, 3)
-        self.main_layout.addLayout(self.buttons_layout, 2, 0, 1, -1)
-        self.main_layout.setContentsMargins(20, 20, 20, 20)
-        self.setLayout(self.main_layout)
+    def change_audio_activated_state(self, new_state):
+        activate_color, disabled_color = (
+            get_activate_and_disabled_color_according_to_current_theme()
+        )
+        if new_state:
+            self.set_tab_color(
+                tab_index=self.tabs_ids["Audio"], color_string=activate_color
+            )
+        else:
+            self.set_tab_color(
+                tab_index=self.tabs_ids["Audio"], color_string=disabled_color
+            )
+        self.tabs_status[self.tabs_ids["Audio"]] = new_state
 
-        self.setup_ui()
-        self.signal_connect()
+    def change_chapter_activated_state(self, new_state):
+        activate_color, disabled_color = (
+            get_activate_and_disabled_color_according_to_current_theme()
+        )
+        if new_state:
+            self.set_tab_color(
+                tab_index=self.tabs_ids["Chapter"], color_string=activate_color
+            )
+        else:
+            self.set_tab_color(
+                tab_index=self.tabs_ids["Chapter"], color_string=disabled_color
+            )
+        self.tabs_status[self.tabs_ids["Chapter"]] = new_state
 
-    def setup_ui(self):
-        self.disable_question_mark_window()
+    def update_theme_mode_state(self):
+        self.theme_changed_signal.emit()
+        self.video_tab.update_theme_mode_state()
+        self.subtitle_tab.update_theme_mode_state()
+        self.audio_tab.update_theme_mode_state()
+        self.attachment_tab.update_theme_mode_state()
+        self.mux_setting_tab.update_theme_mode_state()
+        self.update_tabs_name_theme_mode_state()
         if Options.Dark_Mode:
-            audio_icon_path = GlobalFiles.AudioDarkIconPath
+            self.setPalette(get_dark_palette())
         else:
-            audio_icon_path = GlobalFiles.AudioLightIconPath
-        self.messageIcon.setPixmap(QtGui.QPixmap(audio_icon_path).scaledToHeight(100))
-        self.set_dialog_values()
-        self.set_default_buttons()
-        if self.audio_set_default_disabled:
-            self.audio_set_default_disable()
-        if self.audio_set_forced_disabled:
-            self.audio_set_forced_disable()
-        if self.disable_edit:
-            self.audio_track_name_lineEdit.setEnabled(False)
-            self.audio_language_comboBox.setEnabled(False)
-            self.audio_delay_spin.setEnabled(False)
-            self.audio_set_default_checkBox.setEnabled(False)
-            self.audio_set_forced_checkBox.setEnabled(False)
-            self.reset_button.setEnabled(False)
+            self.setPalette(get_light_palette())
 
-        self.setup_tool_tip_hint_audio_set_default()
-        self.setup_tool_tip_hint_audio_set_forced()
+    def update_tabs_name_theme_mode_state(self):
+        activate_color, disabled_color = (
+            get_activate_and_disabled_color_according_to_current_theme()
+        )
+        for tab_id in range(len(self.tabs_status)):
+            tab_status = self.tabs_status[tab_id]
+            if tab_status:
+                self.set_tab_color(tab_index=tab_id, color_string=activate_color)
+            else:
+                self.set_tab_color(tab_index=tab_id, color_string=disabled_color)
 
-    def signal_connect(self):
-        self.audio_track_name_lineEdit.textEdited.connect(self.update_current_audio_track_name)
-        self.audio_delay_spin.editingFinished.connect(self.update_current_audio_delay)
-        self.audio_language_comboBox.currentTextChanged.connect(self.update_current_audio_language)
-        self.audio_set_default_checkBox.stateChanged.connect(self.update_current_audio_set_default)
-        self.audio_set_forced_checkBox.stateChanged.connect(self.update_current_audio_set_forced)
-        self.yes_button.clicked.connect(self.click_yes)
-        self.no_button.clicked.connect(self.click_no)
-        self.reset_button.clicked.connect(self.reset_audio_setting)
+    def current_tab_changed(self, index):
+        if index == self.tabs_ids["Video"]:
+            self.video_tab.tab_clicked_signal.emit()
+        elif index == self.tabs_ids["Subtitle"]:
+            self.subtitle_tab.tab_clicked_signal.emit()
+        elif index == self.tabs_ids["Audio"]:
+            self.audio_tab.tab_clicked_signal.emit()
+        elif index == self.tabs_ids["Attachment"]:
+            self.attachment_tab.tab_clicked_signal.emit()
+        elif index == self.tabs_ids["Chapter"]:
+            self.chapter_tab.tab_clicked_signal.emit()
+        elif index == self.tabs_ids["Mux Setting"]:
+            self.mux_setting_tab.tab_clicked_signal.emit()
 
-    def click_yes(self):
-        self.state = "yes"
-        self.close()
-
-    def click_no(self):
-        self.state = "no"
-        self.close()
-
-    def set_dialog_values(self):
-        self.setWindowTitle(self.window_title)
-        self.setWindowIcon(GlobalIcons.InfoSettingIcon)
-
-    def disable_question_mark_window(self):
-        self.setWindowFlag(Qt.WindowType.WindowContextHelpButtonHint, on=False)
-
-    def set_default_buttons(self):
-        self.yes_button.setDefault(True)
-        self.yes_button.setFocus()
-
-    def showEvent(self, a0: QtGui.QShowEvent) -> None:
-        super().showEvent(a0)
-        self.setFixedSize(self.size())
-
-    def setup_audio_track_name_lineEdit(self):
-        self.audio_track_name_lineEdit.setClearButtonEnabled(True)
-        self.audio_track_name_lineEdit.setText(self.current_audio_track_name[self.current_audio_index])
-
-    def setup_audio_language_comboBox(self):
-        self.audio_language_comboBox.addItems(Options.CurrentPreset.Default_Favorite_Audio_Languages)
-        self.audio_language_comboBox.setCurrentIndex(
-            Options.CurrentPreset.Default_Favorite_Audio_Languages.index(
-                self.current_audio_language[self.current_audio_index]))
-        self.audio_language_comboBox.setMaxVisibleItems(8)
-        self.audio_language_comboBox.setStyleSheet("QComboBox { combobox-popup: 0; }")
-
-    def setup_audio_delay_spin(self):
-        # self.audio_delay_spin.setMaximumWidth(screen_size.width() // 16)
-        self.audio_delay_spin.setDecimals(3)
-        self.audio_delay_spin.setMinimum(-9999.0)
-        self.audio_delay_spin.setMaximum(9999.0)
-        self.audio_delay_spin.setSingleStep(0.5)
-        self.audio_delay_spin.setValue(float(self.current_audio_delay[self.current_audio_index]))
-
-    def setup_audio_set_default_checkBox(self):
-        self.audio_set_default_checkBox.setText("Set Default")
-        self.audio_set_default_checkBox.setChecked(
-            bool(self.current_audio_set_default[self.current_audio_index]))
-
-    def setup_audio_set_forced_checkBox(self):
-        self.audio_set_forced_checkBox.setText("Set Forced")
-        self.audio_set_forced_checkBox.setChecked(
-            bool(self.current_audio_set_forced[self.current_audio_index]))
-
-    def update_current_audio_track_name(self):
-        self.current_audio_track_name[self.current_audio_index] = str(self.audio_track_name_lineEdit.text())
-
-    def update_current_audio_delay(self):
-        self.current_audio_delay[self.current_audio_index] = round(self.audio_delay_spin.value(), 5)
-
-    def update_current_audio_language(self):
-        self.current_audio_language[self.current_audio_index] = str(self.audio_language_comboBox.currentText())
-
-    def update_current_audio_set_default(self):
-        new_state = self.audio_set_default_checkBox.checkState() == Qt.CheckState.Checked
-        self.current_audio_set_default[self.current_audio_index] = new_state
-        if new_state:
-            for i in range(len(self.current_audio_set_default)):
-                if i != self.current_audio_index:
-                    self.current_audio_set_default[i] = False
-
-    def update_current_audio_set_forced(self):
-        new_state = self.audio_set_forced_checkBox.checkState() == Qt.CheckState.Checked
-        self.current_audio_set_forced[self.current_audio_index] = new_state
-        if new_state:
-            for i in range(len(self.current_audio_set_forced)):
-                if i != self.current_audio_index:
-                    self.current_audio_set_forced[i] = False
-
-    def reset_audio_setting(self):
-        self.current_audio_language[self.current_audio_index] = self.default_audio_language[
-            self.current_audio_index]
-        self.current_audio_delay[self.current_audio_index] = self.default_audio_delay[
-            self.current_audio_index]
-        self.current_audio_track_name[self.current_audio_index] = self.default_audio_track_name[
-            self.current_audio_index]
-        self.current_audio_set_default[self.current_audio_index] = self.default_audio_set_default[
-            self.current_audio_index]
-        self.current_audio_set_forced[self.current_audio_index] = self.default_audio_set_forced[
-            self.current_audio_index]
-
-        self.audio_language_comboBox.setCurrentIndex(
-            Options.CurrentPreset.Default_Favorite_Audio_Languages.index(
-                self.current_audio_language[self.current_audio_index]))
-        self.audio_delay_spin.setValue(float(self.current_audio_delay[self.current_audio_index]))
-        self.audio_track_name_lineEdit.setText(self.current_audio_track_name[self.current_audio_index])
-        self.audio_set_default_checkBox.setChecked(
-            bool(self.current_audio_set_default[self.current_audio_index]))
-        self.audio_set_forced_checkBox.setChecked(
-            bool(self.current_audio_set_forced[self.current_audio_index]))
-
-    def audio_set_default_disable(self):
-        self.audio_set_default_checkBox.setDisabled(True)
-
-    def audio_set_forced_disable(self):
-        self.audio_set_forced_checkBox.setDisabled(True)
-
-    def setup_tool_tip_hint_audio_set_default(self):
-        if self.audio_set_default_checkBox.isEnabled():
-            self.audio_set_default_checkBox.setToolTip("<nobr>set this audio to be the default audio track "
-                                                       "when play")
-            self.audio_set_default_checkBox.setToolTipDuration(12000)
-        else:
-            self.audio_set_default_checkBox.setToolTip(
-                "<nobr>set this audio to be the default audio track when play<br><b>Disabled</b> because "
-                "option "
-                "<b>make this audio default</b> is enabled on mux setting tab ")
-            self.audio_set_default_checkBox.setToolTipDuration(12000)
-
-    def setup_tool_tip_hint_audio_set_forced(self):
-        if self.audio_set_forced_checkBox.isEnabled():
-            self.audio_set_forced_checkBox.setToolTip("<nobr>set this audio to be the forced audio track when "
-                                                      "play")
-            self.audio_set_forced_checkBox.setToolTipDuration(12000)
-        else:
-            self.audio_set_forced_checkBox.setToolTip(
-                "<nobr>set this audio to be the forced audio track when play<br><b>Disabled</b> because "
-                "option "
-                "<b>make this audio default and forced</b> is enabled on mux setting tab ")
-            self.audio_set_forced_checkBox.setToolTipDuration(12000)
-
-    def update_current_audio_index(self, new_index):
-        self.current_audio_index = new_index
-        self.audio_delay_spin.setValue(float(self.current_audio_delay[self.current_audio_index]))
-        self.audio_set_default_checkBox.setChecked(
-            bool(self.current_audio_set_default[self.current_audio_index]))
-        self.audio_set_forced_checkBox.setChecked(
-            bool(self.current_audio_set_forced[self.current_audio_index]))
-        self.audio_language_comboBox.setCurrentIndex(
-            Options.CurrentPreset.Default_Favorite_Audio_Languages.index(
-                self.current_audio_language[self.current_audio_index]))
-        self.audio_track_name_lineEdit.setText(self.current_audio_track_name[self.current_audio_index])
-        self.audio_name_value.setText(str(self.current_audio_name[self.current_audio_index]))
-
-    def execute(self):
-        self.exec()
+    def set_preset_options(self):
+        self.video_tab.set_preset_options()
+        self.subtitle_tab.set_preset_options()
+        self.audio_tab.set_preset_options()
+        self.chapter_tab.set_preset_options()
+        self.attachment_tab.set_preset_options()
+        self.mux_setting_tab.set_preset_options()

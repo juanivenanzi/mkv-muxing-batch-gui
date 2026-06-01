@@ -1,8 +1,9 @@
 from PySide6.QtCore import QSize, Signal
 from PySide6.QtWidgets import QPushButton
-from packages.Startup.Options import Options, save_options
+
 from packages.Startup.GlobalIcons import ThemeIcon
 from packages.Startup.MainApplication import apply_dark_mode, apply_light_mode
+from packages.Startup.Options import Options, save_options
 
 
 class ThemeButton(QPushButton):
@@ -31,9 +32,9 @@ class ThemeButton(QPushButton):
         self.dark_mode_updated_signal.emit()
 
     def set_tool_tip_when_dark(self):
-        self.setToolTip("Switch To Light Mode")
+        self.setToolTip("Cambiar a modo claro")
         self.setToolTipDuration(1500)
 
     def set_tool_tip_when_light(self):
-        self.setToolTip("Switch To Dark Mode")
+        self.setToolTip("Cambiar a modo oscuro")
         self.setToolTipDuration(1500)

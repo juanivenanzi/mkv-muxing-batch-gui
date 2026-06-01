@@ -1,11 +1,13 @@
 from pathlib import Path
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QPushButton, QFileDialog
+from PySide6.QtWidgets import QFileDialog, QPushButton
 
 from packages.Startup import GlobalIcons
 from packages.Tabs.GlobalSetting import GlobalSetting
-from packages.Tabs.SubtitleTab.Widgets.ReloadSubtitleFilesDialog import ReloadSubtitleFilesDialog
+from packages.Tabs.SubtitleTab.Widgets.ReloadSubtitleFilesDialog import (
+    ReloadSubtitleFilesDialog,
+)
 
 
 class SubtitleSourceButton(QPushButton):
@@ -26,13 +28,19 @@ class SubtitleSourceButton(QPushButton):
         if self.is_there_old_files:
             reload_dialog = ReloadSubtitleFilesDialog(parent=self)
             reload_dialog.execute()
-            if reload_dialog.result == "Yes":
-                temp_folder_path = QFileDialog.getExistingDirectory(self, caption="Choose Subtitle Folder",
-                                                                    dir=GlobalSetting.LAST_DIRECTORY_PATH)
+            if reload_dialog.result == "Yes":  # ← No traducir, valor interno
+                temp_folder_path = QFileDialog.getExistingDirectory(
+                    self,
+                    caption="Elegir carpeta de subtítulos",
+                    dir=GlobalSetting.LAST_DIRECTORY_PATH,
+                )
                 new_folder_path = temp_folder_path
         else:
-            temp_folder_path = QFileDialog.getExistingDirectory(self, caption="Choose Subtitle Folder",
-                                                                dir=GlobalSetting.LAST_DIRECTORY_PATH)
+            temp_folder_path = QFileDialog.getExistingDirectory(
+                self,
+                caption="Elegir carpeta de subtítulos",
+                dir=GlobalSetting.LAST_DIRECTORY_PATH,
+            )
             new_folder_path = temp_folder_path
 
         if new_folder_path == "" or new_folder_path.isspace():
@@ -46,7 +54,12 @@ class SubtitleSourceButton(QPushButton):
         super().setEnabled(new_state)
         if not new_state and not GlobalSetting.JOB_QUEUE_EMPTY:
             if self.hint_when_enabled != "":
-                self.setToolTip("<nobr>" + self.hint_when_enabled + "<br>" + GlobalSetting.DISABLE_TOOLTIP)
+                self.setToolTip(
+                    "<nobr>"
+                    + self.hint_when_enabled
+                    + "<br>"
+                    + GlobalSetting.DISABLE_TOOLTIP
+                )
             else:
                 self.setToolTip("<nobr>" + GlobalSetting.DISABLE_TOOLTIP)
         else:
@@ -56,7 +69,12 @@ class SubtitleSourceButton(QPushButton):
         super().setDisabled(new_state)
         if new_state and not GlobalSetting.JOB_QUEUE_EMPTY:
             if self.hint_when_enabled != "":
-                self.setToolTip("<nobr>" + self.hint_when_enabled + "<br>" + GlobalSetting.DISABLE_TOOLTIP)
+                self.setToolTip(
+                    "<nobr>"
+                    + self.hint_when_enabled
+                    + "<br>"
+                    + GlobalSetting.DISABLE_TOOLTIP
+                )
             else:
                 self.setToolTip("<nobr>" + GlobalSetting.DISABLE_TOOLTIP)
         else:

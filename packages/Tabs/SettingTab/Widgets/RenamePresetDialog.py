@@ -1,19 +1,19 @@
-from PySide6 import QtGui, QtCore
-from PySide6.QtWidgets import QHBoxLayout, QGridLayout, QLabel, QPushButton, QLineEdit
+from PySide6 import QtCore, QtGui
+from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
 
 from packages.Startup import GlobalIcons
 from packages.Widgets.MyDialog import MyDialog
 
 
 class RenamePresetDialog(MyDialog):
-    def __init__(self, parent=None, old_name="Preset"):
+    def __init__(self, parent=None, old_name="Perfil"):
         super().__init__(parent)
-        self.setWindowTitle("Rename Preset")
+        self.setWindowTitle("Renombrar perfil")
         self.setWindowIcon(GlobalIcons.RenameIcon)
         self.message = QLabel()
-        self.message.setText("Rename Preset To: ")
-        self.yes_button = QPushButton("OK")
-        self.no_button = QPushButton("Cancel")
+        self.message.setText("Renombrar perfil a: ")
+        self.yes_button = QPushButton("Aceptar")
+        self.no_button = QPushButton("Cancelar")
         self.new_name = old_name
         self.buttonLayout = QHBoxLayout()
         self.buttonLayout.addWidget(self.no_button)
@@ -43,12 +43,12 @@ class RenamePresetDialog(MyDialog):
         pass
 
     def click_yes(self):
-        self.result = "Yes"
+        self.result = "Yes"  # ← No traducir, valor interno
         self.new_name = self.line_edit.text()
         self.close()
 
     def click_no(self):
-        self.result = "No"
+        self.result = "No"  # ← No traducir, valor interno
         self.close()
 
     def disable_question_mark_window(self):

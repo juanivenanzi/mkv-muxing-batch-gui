@@ -1,24 +1,30 @@
 import time
 
-from PySide6.QtCore import Qt, QThread, QSize
+from PySide6.QtCore import QSize, Qt, QThread
 from PySide6.QtGui import QMovie
-from PySide6.QtWidgets import QLabel, QHBoxLayout
+from PySide6.QtWidgets import QHBoxLayout, QLabel
 
 from packages.Startup.GlobalFiles import SpinnerIconPath
-from packages.Tabs.VideoTab.Widgets.GenerateMediaInfoFilesWorker import GenerateMediaInfoFilesWorker
+from packages.Tabs.VideoTab.Widgets.GenerateMediaInfoFilesWorker import (
+    GenerateMediaInfoFilesWorker,
+)
 from packages.Widgets.MyDialog import MyDialog
 
 
 class LoadingVideosInfoDialog(MyDialog):
     def __init__(self, videos_list, parent=None):
         super().__init__(parent=parent)
-        self.setWindowTitle("Loading Media Info")
+        self.setWindowTitle("Cargando información del medio")
         self.videos_list = videos_list
         self.videos_count = len(self.videos_list)
         self.current_video_done_index = 0
         self.unsupported_files_list = []
         self.status_label = QLabel(
-            "  Scanning Video " + str(self.current_video_done_index) + "/" + str(self.videos_count))
+            "  Escaneando video "
+            + str(self.current_video_done_index)
+            + "/"
+            + str(self.videos_count)
+        )
         self.load_icon_movie = QMovie(SpinnerIconPath)
         self.load_icon_movie.setScaledSize(QSize(32, 32))
         self.load_icon_label = QLabel()
@@ -38,16 +44,30 @@ class LoadingVideosInfoDialog(MyDialog):
     # noinspection PyAttributeOutsideInit
     def generate_media_info_files(self):
         self.generate_media_info_files_thread = QThread()
-        self.generate_media_info_files_worker = GenerateMediaInfoFilesWorker(self.videos_list)
-        self.generate_media_info_files_worker.moveToThread(self.generate_media_info_files_thread)
-        self.generate_media_info_files_thread.started.connect(self.generate_media_info_files_worker.run)
-        self.generate_media_info_files_worker.job_succeeded_signal.connect(self.update_progress)
-        self.generate_media_info_files_worker.job_unsupported_file_signal.connect(self.add_new_unsupported_file)
+        self.generate_media_info_files_worker = GenerateMediaInfoFilesWorker(
+            self.videos_list
+        )
+        self.generate_media_info_files_worker.moveToThread(
+            self.generate_media_info_files_thread
+        )
+        self.generate_media_info_files_thread.started.connect(
+            self.generate_media_info_files_worker.run
+        )
+        self.generate_media_info_files_worker.job_succeeded_signal.connect(
+            self.update_progress
+        )
+        self.generate_media_info_files_worker.job_unsupported_file_signal.connect(
+            self.add_new_unsupported_file
+        )
         self.generate_media_info_files_worker.finished_all_jobs_signal.connect(
-            self.generate_media_info_files_thread.quit)
+            self.generate_media_info_files_thread.quit
+        )
         self.generate_media_info_files_worker.finished_all_jobs_signal.connect(
-            self.generate_media_info_files_worker.deleteLater)
-        self.generate_media_info_files_thread.finished.connect(self.generate_media_info_files_thread.deleteLater)
+            self.generate_media_info_files_worker.deleteLater
+        )
+        self.generate_media_info_files_thread.finished.connect(
+            self.generate_media_info_files_thread.deleteLater
+        )
         self.generate_media_info_files_thread.finished.connect(self.stop_loading)
         self.start_loading()
         self.generate_media_info_files_thread.start()
@@ -58,7 +78,11 @@ class LoadingVideosInfoDialog(MyDialog):
     def update_progress(self):
         self.current_video_done_index += 1
         self.status_label.setText(
-            "  Scanning Video " + str(self.current_video_done_index) + "/" + str(self.videos_count))
+            "  Escaneando video "
+            + str(self.current_video_done_index)
+            + "/"
+            + str(self.videos_count)
+        )
 
     def add_new_unsupported_file(self, file_name):
         self.unsupported_files_list.append(file_name)

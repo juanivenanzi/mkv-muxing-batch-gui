@@ -6,8 +6,9 @@ class ClearVideoFilesDialog(YesNoDialog):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.message.setText(
-            "Are you sure ?\nThis will clear all video files")
-        self.setWindowTitle("Clear Video Files")
+            "¿Estás seguro?\nEsto eliminará todos los archivos de video"
+        )
+        self.setWindowTitle("Limpiar archivos de video")
         self.setWindowIcon(GlobalIcons.NoMarkIcon)
 
     def execute(self):

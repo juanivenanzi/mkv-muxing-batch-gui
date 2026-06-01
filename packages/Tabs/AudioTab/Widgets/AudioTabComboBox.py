@@ -1,9 +1,9 @@
-from PySide6.QtCore import Signal, Qt, QSize, QEvent
+from PySide6.QtCore import QEvent, QSize, Qt, Signal
 from PySide6.QtWidgets import QComboBox, QStyledItemDelegate
 
 from packages.Startup import GlobalIcons
-from packages.Startup.Options import Options
 from packages.Startup.InitializeScreenResolution import screen_size
+from packages.Startup.Options import Options
 from packages.Startup.SetupThems import get_dark_palette, get_light_palette
 from packages.Tabs.GlobalSetting import GlobalSetting
 
@@ -11,7 +11,9 @@ from packages.Tabs.GlobalSetting import GlobalSetting
 class AlignDelegate(QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super(AlignDelegate, self).initStyleOption(option, index)
-        option.displayAlignment = Qt.AlignmentFlag.AlignJustify | Qt.AlignmentFlag.AlignCenter
+        option.displayAlignment = (
+            Qt.AlignmentFlag.AlignJustify | Qt.AlignmentFlag.AlignCenter
+        )
 
 
 class AudioTabComboBox(QComboBox):
@@ -20,14 +22,14 @@ class AudioTabComboBox(QComboBox):
 
     def __init__(self):
         super().__init__()
-        self.hint_when_enabled = "Audios Groups"
+        self.hint_when_enabled = "Grupos de audios"
         self.name = "Audio"
-        self.hint_when_enabled = "Clear Files"
+        self.hint_when_enabled = "Limpiar archivos"
         self.closeOnLineEditClick = False
         # delegate = AlignDelegate(self)
         # self.setItemDelegate(delegate)
         self.addItem(self.name + " #1")
-        self.addItem(GlobalIcons.PlusIcon, "New")
+        self.addItem(GlobalIcons.PlusIcon, "Nuevo")
         self.setIconSize(QSize(13, 13))
         self.setEditable(True)
         self.setStyleSheet("QComboBox::pane {border-radius: 5px;}")
@@ -48,7 +50,12 @@ class AudioTabComboBox(QComboBox):
         super().setEnabled(new_state)
         if not new_state and not GlobalSetting.JOB_QUEUE_EMPTY:
             if self.hint_when_enabled != "":
-                self.setToolTip("<nobr>" + self.hint_when_enabled + "<br>" + GlobalSetting.DISABLE_TOOLTIP)
+                self.setToolTip(
+                    "<nobr>"
+                    + self.hint_when_enabled
+                    + "<br>"
+                    + GlobalSetting.DISABLE_TOOLTIP
+                )
             else:
                 self.setToolTip("<nobr>" + GlobalSetting.DISABLE_TOOLTIP)
         else:
@@ -58,7 +65,12 @@ class AudioTabComboBox(QComboBox):
         super().setDisabled(new_state)
         if new_state and not GlobalSetting.JOB_QUEUE_EMPTY:
             if self.hint_when_enabled != "":
-                self.setToolTip("<nobr>" + self.hint_when_enabled + "<br>" + GlobalSetting.DISABLE_TOOLTIP)
+                self.setToolTip(
+                    "<nobr>"
+                    + self.hint_when_enabled
+                    + "<br>"
+                    + GlobalSetting.DISABLE_TOOLTIP
+                )
             else:
                 self.setToolTip("<nobr>" + GlobalSetting.DISABLE_TOOLTIP)
         else:
@@ -98,7 +110,7 @@ class AudioTabComboBox(QComboBox):
                             self.showPopup()
                         return True
                     return False
-        except Exception as e:
+        except Exception:
             return False
 
     def hidePopup(self):

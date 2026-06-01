@@ -1,7 +1,7 @@
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import Qt, QEvent
+from PySide6.QtCore import QEvent, Qt
 from PySide6.QtGui import QFontMetrics
-from PySide6.QtWidgets import QStyledItemDelegate, QComboBox
+from PySide6.QtWidgets import QComboBox, QStyledItemDelegate
 
 # noinspection SpellCheckingInspection
 from packages.Tabs.GlobalSetting import GlobalSetting
@@ -29,7 +29,7 @@ class TracksCheckableComboBox(QComboBox):
         self.lineEdit().selectionChanged.connect(self.disable_select)
         self.lineEdit().setContextMenuPolicy(Qt.ContextMenuPolicy.PreventContextMenu)
         self.hint_when_enabled = ""
-        self.empty_selection_string = "Discard All"
+        self.empty_selection_string = "Descartar todo"
         self.empty_selection_hint_string = ""
         self.tracks_id = []
         self.tracks_language = []
@@ -93,22 +93,34 @@ class TracksCheckableComboBox(QComboBox):
                     if event.type() == QEvent.MouseButtonRelease:
                         index = self.view().indexAt(event.pos())
                         item = self.model().item(index.row())
-                        if item.text().find("All Tracks") != -1:
-                            if item.checkState() == Qt.CheckState.Checked or item.checkState() == Qt.CheckState.PartiallyChecked:
+                        if item.text().find("Todas las pistas") != -1:
+                            if (
+                                item.checkState() == Qt.CheckState.Checked
+                                or item.checkState() == Qt.CheckState.PartiallyChecked
+                            ):
                                 for i in range(0, self.model().rowCount()):
                                     item = self.model().item(i)
-                                    if item.text().find("---Track Id---") == -1 and item.text().find(
-                                            "---Language---") == -1 and item.text().find("---Track Name---") == -1:
+                                    if (
+                                        item.text().find("---Track Id---") == -1
+                                        and item.text().find("---Language---") == -1
+                                        and item.text().find("---Track Name---") == -1
+                                    ):
                                         item.setCheckState(Qt.CheckState.Unchecked)
                             else:
                                 for i in range(0, self.model().rowCount()):
                                     item = self.model().item(i)
-                                    if item.text().find("---Track Id---") == -1 and item.text().find(
-                                            "---Language---") == -1 and item.text().find("---Track Name---") == -1:
+                                    if (
+                                        item.text().find("---Track Id---") == -1
+                                        and item.text().find("---Language---") == -1
+                                        and item.text().find("---Track Name---") == -1
+                                    ):
                                         item.setCheckState(Qt.CheckState.Checked)
                             return True
-                        elif item.text().find("---Track Id---") == -1 and item.text().find(
-                                "---Language---") == -1 and item.text().find("---Track Name---") == -1:
+                        elif (
+                            item.text().find("---Track Id---") == -1
+                            and item.text().find("---Language---") == -1
+                            and item.text().find("---Track Name---") == -1
+                        ):
                             if item.checkState() == Qt.CheckState.Checked:
                                 item.setCheckState(Qt.CheckState.Unchecked)
                                 self.update_state_of_select_all_check()
@@ -121,7 +133,7 @@ class TracksCheckableComboBox(QComboBox):
                 return False
             else:
                 return False
-        except Exception as e:
+        except Exception:
             return False
 
     def showPopup(self):
@@ -175,16 +187,18 @@ class TracksCheckableComboBox(QComboBox):
         self.tracks_language = tracks_languages_text
         self.tracks_name = tracks_name_text
         if count_tracks_id > 0:
-            tracks_id_text = "Track Ids: [" + ", ".join(tracks_id_text) + "]"
+            tracks_id_text = "Ids de pista: [" + ", ".join(tracks_id_text) + "]"
             text = tracks_id_text
         if count_tracks_languages > 0:
-            tracks_languages_text = "Languages: [" + ", ".join(tracks_languages_text) + "]"
+            tracks_languages_text = (
+                "Idiomas: [" + ", ".join(tracks_languages_text) + "]"
+            )
             if text != "":
                 text = text + "," + tracks_languages_text
             else:
                 text = tracks_languages_text
         if count_tracks_names > 0:
-            tracks_name_text = "Track Names: [" + ", ".join(tracks_name_text) + "]"
+            tracks_name_text = "Nombres de pista: [" + ", ".join(tracks_name_text) + "]"
             if text != "":
                 text = text + "," + tracks_name_text
             else:
@@ -221,13 +235,17 @@ class TracksCheckableComboBox(QComboBox):
             item.setData(text)
         else:
             item.setData(data)
-        if text.find("---Track Id---") == -1 and text.find("---Language---") == -1 and text.find(
-                "---Track Name---") == -1 and text.find("All Tracks") == -1:
+        if (
+            text.find("---Track Id---") == -1
+            and text.find("---Language---") == -1
+            and text.find("---Track Name---") == -1
+            and text.find("Todas las pistas") == -1
+        ):
             item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
             item.setData(Qt.CheckState.Unchecked, Qt.CheckStateRole)
             item.setData(text, Qt.ItemDataRole.ToolTipRole)
             self.model().appendRow(item)
-        elif text.find("All Tracks") != -1:
+        elif text.find("Todas las pistas") != -1:
             item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
             item.setData(Qt.CheckState.Unchecked, Qt.CheckStateRole)
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -243,7 +261,7 @@ class TracksCheckableComboBox(QComboBox):
 
     def addItems(self, texts: list, datalist=None):
         self.clear()
-        self.addItem("All Tracks      ", None)
+        self.addItem("Todas las pistas      ", None)
         for i, text in enumerate(texts):
             try:
                 data = datalist[i]
@@ -285,7 +303,12 @@ class TracksCheckableComboBox(QComboBox):
         super().setEnabled(new_state)
         if not new_state and not GlobalSetting.JOB_QUEUE_EMPTY:
             if self.hint_when_enabled != "":
-                self.setToolTip("<nobr>" + self.hint_when_enabled + "<br>" + GlobalSetting.DISABLE_TOOLTIP)
+                self.setToolTip(
+                    "<nobr>"
+                    + self.hint_when_enabled
+                    + "<br>"
+                    + GlobalSetting.DISABLE_TOOLTIP
+                )
             else:
                 self.setToolTip("<nobr>" + GlobalSetting.DISABLE_TOOLTIP)
         else:
@@ -295,7 +318,12 @@ class TracksCheckableComboBox(QComboBox):
         super().setDisabled(new_state)
         if new_state and not GlobalSetting.JOB_QUEUE_EMPTY:
             if self.hint_when_enabled != "":
-                self.setToolTip("<nobr>" + self.hint_when_enabled + "<br>" + GlobalSetting.DISABLE_TOOLTIP)
+                self.setToolTip(
+                    "<nobr>"
+                    + self.hint_when_enabled
+                    + "<br>"
+                    + GlobalSetting.DISABLE_TOOLTIP
+                )
             else:
                 self.setToolTip("<nobr>" + GlobalSetting.DISABLE_TOOLTIP)
         else:
@@ -312,7 +340,9 @@ class TracksCheckableComboBox(QComboBox):
             non_italic_font = self.lineEdit().font()
             non_italic_font.setItalic(False)
             self.lineEdit().setFont(non_italic_font)
-            elided_text = metrics.elidedText(self.current_text, Qt.TextElideMode.ElideRight, self.lineEdit().width())
+            elided_text = metrics.elidedText(
+                self.current_text, Qt.TextElideMode.ElideRight, self.lineEdit().width()
+            )
             self.lineEdit().setText(elided_text)
         else:
             italic_font = self.lineEdit().font()
